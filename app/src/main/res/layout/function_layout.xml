@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/function_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="20dp"
+    android:weightSum="1"
+    android:background="@color/white">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="113dp"
+        android:id="@+id/grpFAN"
+        android:clickable="true">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/fan"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/modeButtonTextSize_title"
+                android:textStyle="bold" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:id="@+id/fanButtonLow"
+                android:layout_width="@dimen/modeButtonWidth"
+                android:layout_height="@dimen/modeButtonDimen"
+                android:background="@drawable/btn_baseleft"
+                android:paddingBottom="@dimen/modeButtonPadding"
+                android:paddingLeft="18dip"
+                android:paddingRight="2dip"
+                android:paddingTop="@dimen/modeButtonPadding"
+                android:src="@mipmap/fanlow" />
+
+            <ImageView
+                android:id="@+id/fanButtonMed"
+                android:layout_width="@dimen/modeButtonWidth"
+                android:layout_height="@dimen/modeButtonDimen"
+                android:background="@drawable/btn_basemid"
+                android:padding="@dimen/modeButtonPadding"
+                android:src="@mipmap/fanmid" />
+
+            <ImageView
+                android:id="@+id/fanButtonHigh"
+                android:layout_width="@dimen/modeButtonWidth"
+                android:layout_height="@dimen/modeButtonDimen"
+                android:background="@drawable/btn_baseright"
+                android:padding="@dimen/modeButtonPadding"
+                android:src="@mipmap/fanhigh" />
+
+            <ImageView
+                android:id="@+id/fanButtonOnoff"
+                android:layout_width="@dimen/modeButtonWidth"
+                android:layout_height="@dimen/modeButtonDimen"
+                android:background="@drawable/btn_onoff"
+                android:padding="@dimen/modeButtonPadding" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/fanTextLow"
+                android:layout_width="@dimen/modeButtonWidth"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/fanlow"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/modeButtonTextSize"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/fanTextMed"
+                android:layout_width="@dimen/modeButtonWidth"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/fanmed"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/modeButtonTextSize"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/fanTextHigh"
+                android:layout_width="@dimen/modeButtonWidth"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/fanhigh"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/modeButtonTextSize"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/fanTextOnoff"
+                android:layout_width="@dimen/modeButtonWidth"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/fanonoff"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/modeButtonTextSize"
+                android:textStyle="bold" />
+        </TableRow>
+
+    </TableLayout>
+
+    <TableLayout
+        android:id="@+id/grpLAMP"
+        android:layout_width="match_parent"
+        android:layout_height="399dp"
+        android:clickable="true"
+        android:paddingTop="@dimen/modeButtonPadding1">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/lamp"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/modeButtonTextSize_title"
+                android:textStyle="bold" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/txtlamp1"
+                android:layout_width="@dimen/modeButtonWidth"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/lamp1"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/modeButtonTextSize"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/lamp1_off"
+                android:layout_width="@dimen/modeButtonWidth"
+                android:layout_height="@dimen/modeButtonDimen"
+                android:background="@drawable/btn_baseleft"
+                android:padding="@dimen/modeButtonPadding1"
+                android:src="@mipmap/lampoff" />
+
+            <ImageView
+                android:id="@+id/lamp1_on"
+                android:layout_width="@dimen/modeButtonWidth"
+                android:layout_height="@dimen/modeButtonDimen"
+                android:background="@drawable/btn_baseright"
+                android:padding="@dimen/modeButtonPadding1"
+                android:src="@mipmap/lampon" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/txtlamp2"
+                android:layout_width="@dimen/modeButtonWidth"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/lamp2"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/modeButtonTextSize"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/lamp2_off"
+                android:layout_width="@dimen/modeButtonWidth"
+                android:layout_height="@dimen/modeButtonDimen"
+                android:background="@drawable/btn_baseleft"
+                android:padding="@dimen/modeButtonPadding1"
+                android:src="@mipmap/lampoff" />
+
+            <ImageView
+                android:id="@+id/lamp2_on"
+                android:layout_width="@dimen/modeButtonWidth"
+                android:layout_height="@dimen/modeButtonDimen"
+                android:background="@drawable/btn_baseright"
+                android:padding="@dimen/modeButtonPadding1"
+                android:src="@mipmap/lampon" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/txtlamp3"
+                android:layout_width="@dimen/modeButtonWidth"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/lamp3"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/modeButtonTextSize"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/lamp3_off"
+                android:layout_width="@dimen/modeButtonWidth"
+                android:layout_height="@dimen/modeButtonDimen"
+                android:background="@drawable/btn_baseleft"
+                android:padding="@dimen/modeButtonPadding1"
+                android:src="@mipmap/lampoff" />
+
+            <ImageView
+                android:id="@+id/lamp3_on"
+                android:layout_width="@dimen/modeButtonWidth"
+                android:layout_height="@dimen/modeButtonDimen"
+                android:background="@drawable/btn_baseright"
+                android:padding="@dimen/modeButtonPadding1"
+                android:src="@mipmap/lampon" />
+
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>

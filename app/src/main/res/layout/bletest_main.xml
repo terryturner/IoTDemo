@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layoutTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dp"
+            android:src="@drawable/logo_icon" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:layout_margin="5dp"
+            android:text="@string/sub1g_title_name"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:textSize="20dp"/>
+
+        <ImageView
+            android:id="@+id/imgAbout"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:gravity="right"
+            android:layout_margin="5dp"
+            android:src="@android:drawable/ic_menu_info_details" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/modeButtonPadding"
+        android:gravity="center"
+        android:weightSum="1">
+
+        <Button
+            android:id="@+id/btn_select"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_margin="@dimen/modeButtonPadding"
+            android:background="@drawable/btn_background"
+            android:text="@string/connect"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/deviceName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/modeButtonPadding"
+            android:layout_marginRight="@dimen/modeButtonPadding"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:clickable="true">
+
+        <LinearLayout
+            android:id="@+id/linearLayout4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/modeButtonPadding">
+
+            <TextView
+                android:id="@+id/txtStatus"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:gravity="center"
+                android:text="@string/disconnected"
+                android:textAlignment="center"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/RelativeLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="292dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/sendText"
+                android:layout_width="102dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/sendButton"
+                android:ems="10"
+                android:enabled="false"
+                android:fontFamily="1"
+                android:lines="1"
+                android:maxLength="20"
+                android:maxLines="1"
+                android:shadowRadius="1" />
+
+            <ListView
+                android:id="@+id/listMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/sendButton"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true" >
+            </ListView>
+
+            <Button
+                android:id="@+id/sendButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:enabled="false"
+                android:text="Send" />
+
+        </RelativeLayout>
+
+        <include
+            layout="@layout/function_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/deviceLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/device" />
+
+        <TextView
+            android:id="@+id/rssival"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="_"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+</LinearLayout>

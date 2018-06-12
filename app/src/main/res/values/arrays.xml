@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="iot_options">
+        <item>LBE</item>
+        <item>Ameba</item>
+    </string-array>
+
+    <string-array name="lbe_options">
+        <item>HM_10</item>
+        <item>Nordic</item>
+    </string-array>
+
+    <string-array name="ameba_sensors">
+        <item>Humidity</item>
+        <item>Temperature</item>
+        <item>Proximity</item>
+        <item>Accelerometer</item>
+    </string-array>
+</resources>

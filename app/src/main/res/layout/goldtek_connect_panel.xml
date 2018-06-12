@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/goldtek_connect_panel"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/modeButtonPadding"
+    android:gravity="center"
+    android:weightSum="1">
+
+    <Button
+        android:id="@+id/btn_select"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_margin="@dimen/modeButtonPadding"
+        android:background="@drawable/btn_background"
+        android:text="@string/connect"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/deviceName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/modeButtonPadding"
+        android:layout_marginRight="@dimen/modeButtonPadding"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+</LinearLayout>

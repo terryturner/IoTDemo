@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="5dp">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:text="@string/server"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ToggleButton
+            android:id="@+id/toggle_server"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/toggle_server"
+            android:checked="true"
+            android:text=""
+            android:textOff="@string/dummy"
+            android:textOn="@string/server" />
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/etServer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:textColor="@color/black"
+        android:inputType="number|numberDecimal"
+        android:digits="0123456789." />
+
+    <Button
+        android:id="@+id/btnOK"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_background"
+        android:text="@string/connect"
+        android:textColor="@color/white" />
+</LinearLayout>
