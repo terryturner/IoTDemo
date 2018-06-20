@@ -14,6 +14,8 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Random;
 import java.util.regex.Pattern;
@@ -61,7 +63,7 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
 
     @Override
     public void stop() {
-
+        // TODO: disable palo MqttService?!
     }
 
     @Override
@@ -71,7 +73,7 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
         switch (type) {
             case ALL:
                 String msg = Calendar.getInstance().getTime().toString();
-                publish(msg);
+                //publish(msg);
 
                 synchronized (mRawOutput) {
                     if (mRawOutput != null) {
@@ -162,7 +164,21 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
         Log.i(TAG, "receive: " + topic + " " + mqttMessage.toString());
 
         synchronized (mRawOutput) {
-            mRawOutput = String.format("VR=%d,HUM=%d,TMP=%d,Gx=%d,Gy=%d,Gz=%d", r.nextInt(4000), r.nextInt(100), r.nextInt(50), r.nextInt(1000), r.nextInt(1000), r.nextInt(1000));
+            //mRawOutput = String.format("VR=%d,HUM=%d,TMP=%d,Gx=%d,Gy=%d,Gz=%d", r.nextInt(4000), r.nextInt(100), r.nextInt(50), r.nextInt(1000), r.nextInt(1000), r.nextInt(1000));
+
+            int nullIdx = -1;
+            for (int i=0; i<mqttMessage.getPayload().length; i++) {
+                if (mqttMessage.getPayload()[i] == 0) {
+                    nullIdx = i;
+//                    mRawOutput = new String(mqttMessage.getPayload(), 0, i, StandardCharsets.ISO_8859_1).trim();
+                    break;
+                }
+            }
+
+            if (nullIdx > 0)
+                mRawOutput = new String(mqttMessage.getPayload(), 0, nullIdx, StandardCharsets.ISO_8859_1).trim();
+            else
+                mRawOutput = mqttMessage.toString().trim();
         }
     }
 

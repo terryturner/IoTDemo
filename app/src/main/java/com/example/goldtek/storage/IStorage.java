@@ -9,4 +9,7 @@ public interface IStorage {
 
     void putString(String key, String value);
     String getString(String key);
+
+    void putInt(String key, int value);
+    int getInt(String key);
 }

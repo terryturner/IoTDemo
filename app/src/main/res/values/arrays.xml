@@ -16,4 +16,10 @@
         <item>Proximity</item>
         <item>Accelerometer</item>
     </string-array>
+
+    <string-array name="lora_gw_connectors">
+        <item>Dummy</item>
+        <item>Ameba</item>
+        <item>Raspberry</item>
+    </string-array>
 </resources>

@@ -15,7 +15,7 @@ public class Constants {
 
     public static final String PUBLISH_TOPIC = "get_data";
 
-    public static final String SUBSCRIBE_TOPIC = "fromLora";
+    public static final String SUBSCRIBE_TOPIC = "tock";
 
     public static final String CLIENT_ID = "androidkt";
 }

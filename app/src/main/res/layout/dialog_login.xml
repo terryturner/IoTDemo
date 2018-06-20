@@ -18,17 +18,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <ToggleButton
-            android:id="@+id/toggle_server"
-            android:layout_width="60dp"
-            android:layout_height="40dp"
+
+        <Spinner
+            android:id="@+id/lora_gw_selector"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/toggle_server"
-            android:checked="true"
-            android:text=""
-            android:textOff="@string/dummy"
-            android:textOn="@string/server" />
+            android:textSize="20sp"/>
     </RelativeLayout>
 
     <EditText

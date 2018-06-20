@@ -23,6 +23,7 @@ public class GetSensors implements IGetSensors {
     private List<Callback> mCallbacks = new ArrayList<>();
     private Map<Sensor, Bundle> mValues = new HashMap<>();
     private IGwConnector mConnector = new RaspberryGwConnector2(GoldtekApplication.getContext());
+    private List<IGwConnector> mConnectors = new ArrayList<>();
 
     private WorkHandler mWorkHandler;
     private HandlerThread mWorkThread;
@@ -34,19 +35,28 @@ public class GetSensors implements IGetSensors {
         mWorkHandler = new WorkHandler(mWorkThread.getLooper());
 
         mMain = new Handler();
+
+        mConnectors.add(new DummyGwConnector());
+        mConnectors.add(new AmebaGwConnector());
+        mConnectors.add(new RaspberryGwConnector2(GoldtekApplication.getContext()));
     }
 
     @Override
-    public void connect(boolean isDevices, final String ip) {
+    public void connect(final int gw, final String ip) {
 
         mWorkHandler.post(new Runnable() {
             @Override
             public void run() {
+                if (0 <= gw && gw < mConnectors.size())
+                    mConnector = mConnectors.get(gw);
+                else
+                    mConnector = mConnectors.get(0);
+
                 final boolean connect = mConnector.connect(ip);
                 mMain.removeCallbacksAndMessages(null);
 
                 if (connect) {
-                    mMain.postDelayed(new Request(mMain, Sensor.ALL, 1000), 1000);
+                    mMain.postDelayed(new Request(mMain, Sensor.ALL, 200), 1000);
                 }
 
                 // Notify UI: connect state

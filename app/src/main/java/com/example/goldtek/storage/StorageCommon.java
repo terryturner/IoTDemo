@@ -6,5 +6,7 @@ package com.example.goldtek.storage;
 public class StorageCommon {
     public static final String FILE = "settings";
 
-    public static final String AMEBA_SERVER_IP = "ameba_ipv4_addr";
+    public static final String LORA_SERVER_IP = "lora_gw_ipv4_addr";
+
+    public static final String LORA_GW_SELECTOR = "lora_gw_connector";
 }

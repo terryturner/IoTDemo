@@ -37,4 +37,19 @@ public class PrivatePreference implements IStorage {
         }
         return null;
     }
+
+    @Override
+    public void putInt(String key, int value) {
+        if (mInitFlag) {
+            mPref.edit().putInt(key, value).commit();
+        }
+    }
+
+    @Override
+    public int getInt(String key) {
+        if (mInitFlag) {
+            return mPref.getInt(key, 0);
+        }
+        return 0;
+    }
 }

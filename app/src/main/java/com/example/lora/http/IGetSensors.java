@@ -32,7 +32,7 @@ public interface IGetSensors {
         void onGetValue(Sensor type, Bundle value);
     }
 
-    void connect(boolean isDevices, String url);
+    void connect(int gw, String url);
     void disconnect();
     void stop();
     void setOnValuesChangeListener(@NonNull Callback cb);

@@ -9,8 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -192,10 +194,18 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         final Dialog dialog = new Dialog(this, R.style.MyCustomDialog);
         dialog.setContentView(R.layout.dialog_login);
         Button dialogButton = dialog.findViewById(R.id.btnOK);
-        if (mStorage.getString(StorageCommon.AMEBA_SERVER_IP) != null) {
+        if (mStorage.getString(StorageCommon.LORA_SERVER_IP) != null) {
             EditText etServer = dialog.findViewById(R.id.etServer);
-            etServer.setText(mStorage.getString(StorageCommon.AMEBA_SERVER_IP));
+            etServer.setText(mStorage.getString(StorageCommon.LORA_SERVER_IP));
         }
+
+        final Spinner dialogGwSelector = dialog.findViewById(R.id.lora_gw_selector);
+        ArrayAdapter gw_options = ArrayAdapter.createFromResource(
+                this, R.array.lora_gw_connectors, R.layout.spinner_item);
+        gw_options.setDropDownViewResource(R.layout.spinner_item);
+        dialogGwSelector.setAdapter(gw_options);
+        dialogGwSelector.setSelection(mStorage.getInt(StorageCommon.LORA_GW_SELECTOR));
+
 
         // if button is clicked, close the custom dialog
         dialogButton.setOnClickListener(new View.OnClickListener() {
@@ -204,12 +214,15 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
 
                 ServerValidator validator = new ServerValidator();
                 EditText etServer = ((ViewGroup) v.getParent()).findViewById(R.id.etServer);
-                ToggleButton toggleServer = ((ViewGroup) v.getParent()).findViewById(R.id.toggle_server);
+                int gw = dialogGwSelector.getSelectedItemPosition();
+
                 String ip = etServer.getText().toString();
                 if (validator.isValidIPV4(ip)) {
-                    mGetSensors.connect(toggleServer.isChecked(), ip);
+                    mGetSensors.connect(gw, ip);
                     mGetSensors.setOnValuesChangeListener(MainActivity.this);
-                    mStorage.putString(StorageCommon.AMEBA_SERVER_IP, ip);
+
+                    mStorage.putInt(StorageCommon.LORA_GW_SELECTOR, gw);
+                    mStorage.putString(StorageCommon.LORA_SERVER_IP, ip);
                     setConnectionEnabled(true);
                 } else {
                     Toast.makeText(MainActivity.this, "Error format: " + ip, Toast.LENGTH_SHORT).show();
