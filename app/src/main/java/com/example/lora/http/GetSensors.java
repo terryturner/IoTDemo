@@ -1,17 +1,20 @@
-package com.example.ameba.http;
+package com.example.lora.http;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.util.Log;
+
+import com.example.goldtek.iot.demo.GoldtekApplication;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by Terry on 2018/05/30.
@@ -19,7 +22,7 @@ import java.util.Random;
 public class GetSensors implements IGetSensors {
     private List<Callback> mCallbacks = new ArrayList<>();
     private Map<Sensor, Bundle> mValues = new HashMap<>();
-    private IGwConnector mConnector = new DummyGwConnector();
+    private IGwConnector mConnector = new RaspberryGwConnector2(GoldtekApplication.getContext());
 
     private WorkHandler mWorkHandler;
     private HandlerThread mWorkThread;
@@ -35,19 +38,18 @@ public class GetSensors implements IGetSensors {
 
     @Override
     public void connect(boolean isDevices, final String ip) {
-        if (isDevices) mConnector = new AmebaGwConnector();
 
         mWorkHandler.post(new Runnable() {
             @Override
             public void run() {
-                String url = "http://" + ip;
-                final boolean connect = mConnector.connect(url);
+                final boolean connect = mConnector.connect(ip);
                 mMain.removeCallbacksAndMessages(null);
 
                 if (connect) {
                     mMain.postDelayed(new Request(mMain, Sensor.ALL, 1000), 1000);
                 }
 
+                // Notify UI: connect state
                 mMain.post(new Runnable() {
                     @Override
                     public void run() {
@@ -63,6 +65,7 @@ public class GetSensors implements IGetSensors {
     @Override
     public void disconnect() {
         mMain.removeCallbacksAndMessages(null);
+        mConnector.disconnect();
     }
 
     @Override
@@ -117,6 +120,7 @@ public class GetSensors implements IGetSensors {
                 Sensor sensor = (Sensor) msg.obj;
 
                 if (sensor.equals(Sensor.ALL)) {
+
                     for (Sensor idx : Sensor.values())
                         for (IGetSensors.Callback cb : mCallbacks)
                             if (cb != null) cb.onRequest(idx);
@@ -135,6 +139,7 @@ public class GetSensors implements IGetSensors {
                             if (cb != null) cb.onGetValue(idx, mValues.get(sensor));
 
                 } else {
+
                     for (IGetSensors.Callback cb : mCallbacks)
                         if (cb != null) cb.onRequest(sensor);
 
@@ -148,7 +153,6 @@ public class GetSensors implements IGetSensors {
                     for (IGetSensors.Callback cb : mCallbacks)
                         if (cb != null) cb.onGetValue(sensor, mValues.get(sensor));
                 }
-
 
             }
 

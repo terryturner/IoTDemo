@@ -2,7 +2,7 @@
 <resources>
     <string-array name="iot_options">
         <item>LBE</item>
-        <item>Ameba</item>
+        <item>LoRa</item>
     </string-array>
 
     <string-array name="lbe_options">
@@ -10,7 +10,7 @@
         <item>Nordic</item>
     </string-array>
 
-    <string-array name="ameba_sensors">
+    <string-array name="lora_sensors">
         <item>Humidity</item>
         <item>Temperature</item>
         <item>Proximity</item>

@@ -1,4 +1,4 @@
-package com.example.ameba.http;
+package com.example.lora.http;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -33,13 +33,13 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        setContentView(R.layout.ameba_main);
-        setTitle(R.string.ameba_title_name);
+        setContentView(R.layout.activity_lora_main);
+        setTitle(R.string.lora_title_name);
         findViewById(R.id.btn_select).setTag(false);
         findViewById(R.id.btn_select).setOnClickListener(this);
         findViewById(R.id.imgAbout).setOnClickListener(this);
 
-        String[] sensors = getResources().getStringArray(R.array.ameba_sensors);
+        String[] sensors = getResources().getStringArray(R.array.lora_sensors);
         int[] icons = new int[sensors.length];
         for (int idx=0; idx<sensors.length; idx++) {
             String sensor = String.format("ic_%s", sensors[idx].toLowerCase()).replace(" ", "_");
@@ -47,7 +47,7 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         }
         mSensorAdapter = new SensorsAdapter(this, sensors, icons);
 
-        RecyclerView sensorList = findViewById(R.id.ameba_sensors);
+        RecyclerView sensorList = findViewById(R.id.lora_sensors);
         sensorList.setLayoutManager(new GridLayoutManager(this, 2));
         sensorList.setAdapter(mSensorAdapter);
 

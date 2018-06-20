@@ -1,4 +1,4 @@
-package com.example.ameba.http;
+package com.example.lora.http;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -18,16 +18,16 @@ import okhttp3.Response;
  * Created by Terry on 2018/05/31.
  */
 public class AmebaGwConnector implements IGwConnector {
+    private static final String HTTP_URL_FORMAT = "http://%s";
     private static final String ATGG_GET_DATA = "/command?c=ATGG=get_data%0D%0A";
     private static final String ATWQ_IFCONFIG = "/command?c=ATW?";
     private static final String ATGB_BATTERY = "/command?c=ATGB";
     private static final String ATGP_PROXIMITY = "/command?c=ATGP";
-    private static final String PATTERN_ATGG_GET_DATA = "VR=\\d{1,4},HUM=\\d{1,2},TMP=\\d{1,3},Gx=\\d{1,4},Gy=\\d{1,4},Gz=\\d{1,4}";
     private String mURL = "";
 
     @Override
     public boolean connect(String url) {
-        mURL = url;
+        mURL = String.format(HTTP_URL_FORMAT, url);
         OkHttpClient client = getNewHttpClient();
         try {
             Request request = new Request.Builder().url(mURL + ATWQ_IFCONFIG).build();
@@ -42,6 +42,11 @@ public class AmebaGwConnector implements IGwConnector {
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public void disconnect() {
+
     }
 
     @Override

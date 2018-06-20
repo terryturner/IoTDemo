@@ -25,7 +25,7 @@
     <string name="app_name">GTSW_IOT</string>
     <string name="sub1g_name">GTSW_Sub-1G</string>
     <string name="sub1g_title_name">Goldtek Software Sub-1G</string>
-    <string name="ameba_title_name">Goldtek Software Ameba</string>
+    <string name="lora_title_name">Goldtek Software LoRa</string>
 
     <string name="fan">FAN</string>
     <string name="fanlow">Low</string>

@@ -48,7 +48,7 @@ public class SplashActivity extends Activity {
                     dialog.dismiss();
                     CreateLbeOptions();
                 } else if (item == IOT_ITEM_AMEBA) {
-                    intentMain = new Intent(getApplication(), com.example.ameba.http.MainActivity.class);
+                    intentMain = new Intent(getApplication(), com.example.lora.http.MainActivity.class);
                     startActivity(intentMain);
                     finish();
                 }

@@ -1,4 +1,4 @@
-package com.example.ameba.http;
+package com.example.lora.http;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,7 +9,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.BatteryManager;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.example.goldtek.iot.demo.GoldtekApplication;
 import com.example.goldtek.iot.demo.ReceiveManager;
@@ -60,6 +59,11 @@ public class SelfDeviceConnector implements IGwConnector, SensorEventListener {
         IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         mReceiveManager.registerReceiver(mBroadcastReceiver, filter);
         return true;
+    }
+
+    @Override
+    public void disconnect() {
+
     }
 
     @Override
