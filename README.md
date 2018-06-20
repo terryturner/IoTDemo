@@ -1,4 +1,8 @@
-# Android-nRF-UART
+# GT IoT Demo
+
+---
+
+Android-nRF-UART
 
 nRF UART app can be used to connect to Bluetooth® Smart devices running a custom Nordic Semiconductor UART service. When connected, the app can send and receive ASCII and UTF-8 text strings. 
 
@@ -13,3 +17,11 @@ This source code can be compiled with Android Studio and Gradle.
 ### Note
 - Android 4.3 or later is required.
 - Android Studio supported 
+
+---
+
+Android-MQTT
+
+palo mqtt client
+
+---
