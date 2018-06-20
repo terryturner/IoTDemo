@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="iot_options">
-        <item>LBE</item>
+        <item>BLE</item>
         <item>LoRa</item>
     </string-array>
 
-    <string-array name="lbe_options">
+    <string-array name="ble_options">
         <item>HM_10</item>
         <item>Nordic</item>
     </string-array>

@@ -48,6 +48,10 @@
     <string name="aboutCompany">GOLDT<i>e</i>k Technology Co Ltd.\nAll Rights Reserved</string>
     <string name="aboutWeb">http://www.goldtek.com/</string>
 
+    <string name="back_title">Confirm Exit</string>
+    <string name="back_msg">Are you sure you want to exit?</string>
+    <string name="back_ok">Exit</string>
+
     <string name="device">Device:</string>
     <string name="no_device">&lt;Select a device&gt;</string>
     <string name="select_device">Select a device</string>

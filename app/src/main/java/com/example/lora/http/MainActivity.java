@@ -1,11 +1,14 @@
 package com.example.lora.http;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -40,6 +43,7 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         findViewById(R.id.btn_select).setTag(false);
         findViewById(R.id.btn_select).setOnClickListener(this);
         findViewById(R.id.imgAbout).setOnClickListener(this);
+        findViewById(R.id.img_back).setOnClickListener(this);
 
         String[] sensors = getResources().getStringArray(R.array.lora_sensors);
         int[] icons = new int[sensors.length];
@@ -71,9 +75,9 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
     @Override
     protected void onPause() {
         super.onPause();
-        mGetSensors.disconnect();
-        mGetSensors.removeValueChangeListener(this);
-        setConnectionEnabled(false);
+        //mGetSensors.disconnect();
+        //setConnectionEnabled(false);
+        //mGetSensors.removeValueChangeListener(this);
     }
 
     @Override
@@ -82,6 +86,11 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         mGetSensors.stop();
         mGetSensors.removeValueChangeListener(this);
         setConnectionEnabled(false);
+    }
+
+    @Override
+    public void onBackPressed(){
+        moveTaskToBack(true);
     }
 
     @Override
@@ -114,6 +123,19 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
                     }
                 });
                 dialog.show();
+                break;
+            case R.id.img_back:
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle(R.string.back_title)
+                        .setMessage(R.string.back_msg)
+                        .setPositiveButton(R.string.back_ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                finish();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, null)
+                        .show();
                 break;
         }
     }

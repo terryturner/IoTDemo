@@ -16,9 +16,9 @@ import com.example.bletestv3.Common;
 
 public class SplashActivity extends Activity {
     private final static int IOT_ITEM_BLE = 0;
-    private final static int IOT_ITEM_AMEBA = 1;
-    private final static int LBE_ITEM_HM10 = 0;
-    private final static int LBE_ITEM_NORDIC = 1;
+    private final static int IOT_ITEM_LORA = 1;
+    private final static int BLE_ITEM_HM10 = 0;
+    private final static int BLE_ITEM_NORDIC = 1;
 
     private Context ctx;
     private Intent intentMain;
@@ -46,8 +46,8 @@ public class SplashActivity extends Activity {
             public void onClick(DialogInterface dialog, int item) {
                 if (item == IOT_ITEM_BLE) {
                     dialog.dismiss();
-                    CreateLbeOptions();
-                } else if (item == IOT_ITEM_AMEBA) {
+                    CreateBLEOptions();
+                } else if (item == IOT_ITEM_LORA) {
                     intentMain = new Intent(getApplication(), com.example.lora.http.MainActivity.class);
                     startActivity(intentMain);
                     finish();
@@ -58,21 +58,21 @@ public class SplashActivity extends Activity {
         builder.create().show();
     }
 
-    public void CreateLbeOptions() {
+    public void CreateBLEOptions() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
         builder.setTitle("Select Your Choice");
 
-        final String[] values = getResources().getStringArray(R.array.lbe_options);
+        final String[] values = getResources().getStringArray(R.array.ble_options);
         builder.setSingleChoiceItems(values, -1, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 switch (item) {
-                    case LBE_ITEM_HM10:
-                        Common.SetBLE(LBE_ITEM_HM10);
-                        Toast.makeText(ctx, values[LBE_ITEM_HM10], Toast.LENGTH_LONG).show();
+                    case BLE_ITEM_HM10:
+                        Common.SetBLE(BLE_ITEM_HM10);
+                        Toast.makeText(ctx, values[BLE_ITEM_HM10], Toast.LENGTH_LONG).show();
                         break;
-                    case LBE_ITEM_NORDIC:
-                        Common.SetBLE(LBE_ITEM_NORDIC);
-                        Toast.makeText(ctx, values[LBE_ITEM_NORDIC], Toast.LENGTH_LONG).show();
+                    case BLE_ITEM_NORDIC:
+                        Common.SetBLE(BLE_ITEM_NORDIC);
+                        Toast.makeText(ctx, values[BLE_ITEM_NORDIC], Toast.LENGTH_LONG).show();
                         break;
                 }
                 intentMain = new Intent(getApplication(), com.example.bletestv3.MainActivity.class);
