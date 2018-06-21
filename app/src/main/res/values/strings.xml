@@ -102,6 +102,8 @@
     <string name="scan">Scan</string>
     <string name="cancel">Cancel</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
+    <string name="hint_insert_server_ip">Please insert the cloud IP</string>
+
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

@@ -81,6 +81,7 @@ public class PahoMqttClient {
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setCleanSession(false);
         mqttConnectOptions.setAutomaticReconnect(true);
+        mqttConnectOptions.setConnectionTimeout(2000);
         //mqttConnectOptions.setWill(Constants.PUBLISH_TOPIC, "I am going offline".getBytes(), 1, true);
         //mqttConnectOptions.setUserName("ngbllzzy");
         //mqttConnectOptions.setPassword("WtjhZKl3OPoK".toCharArray());

@@ -15,7 +15,7 @@ public class Constants {
 
     public static final String PUBLISH_TOPIC = "get_data";
 
-    public static final String SUBSCRIBE_TOPIC = "tock";
+    public static final String SUBSCRIBE_TOPIC = "goldtek_iot_lora_demo";
 
     public static final String CLIENT_ID = "androidkt";
 }

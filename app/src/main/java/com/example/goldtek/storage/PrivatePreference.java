@@ -33,7 +33,13 @@ public class PrivatePreference implements IStorage {
     @Override
     public String getString(String key) {
         if (mInitFlag) {
-            return mPref.getString(key, null);
+            String result = null;
+            try {
+                result = mPref.getString(key, null);
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+            }
+            return result;
         }
         return null;
     }

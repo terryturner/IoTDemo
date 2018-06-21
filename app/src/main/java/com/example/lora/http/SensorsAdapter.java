@@ -20,6 +20,7 @@ public class SensorsAdapter extends RecyclerView.Adapter {
     private final String[] mSensors;
     private final String[] mValues;
     private final HashMap<Sensor, Integer> mMapPositions;
+    private final HashMap<Integer, ViewHolder> mViewHolders;
     private final int[] mIcons;
 
     public SensorsAdapter(Context context, String[] sensors, int[] icons) {
@@ -29,6 +30,8 @@ public class SensorsAdapter extends RecyclerView.Adapter {
         mValues = new String[mSensors.length];
 
         mMapPositions = new HashMap<>();
+        mViewHolders = new HashMap<>();
+
         for (int i=0; i<mSensors.length; i++) {
             for (Sensor eSensor : Sensor.values()) {
                 if (eSensor.getName().equalsIgnoreCase(mSensors[i])) {
@@ -52,6 +55,10 @@ public class SensorsAdapter extends RecyclerView.Adapter {
             if (position < mSensors.length) ((ViewHolder)holder).sensorName.setText(mSensors[position]);
             if (position < mValues.length) ((ViewHolder)holder).sensorValue.setText(mValues[position]);
             if (position < mIcons.length) ((ViewHolder)holder).icon.setImageResource(mIcons[position]);
+
+            if (0 <= position && position < mValues.length) {
+                mViewHolders.put(position, (ViewHolder) holder);
+            }
         }
     }
 
@@ -60,17 +67,19 @@ public class SensorsAdapter extends RecyclerView.Adapter {
         return Math.min(mSensors.length, mIcons.length);
     }
 
-    public void updateValue(int position, String value) {
+    public void updateValue(int position, String value, int color) {
         if (0 <= position && position < mValues.length) {
             mValues[position] = value;
+            mViewHolders.get(position).sensorValue.setTextColor(color);
+
             notifyDataSetChanged();
         }
     }
 
-    public void updateValue(Sensor type, String value) {
+    public void updateValue(Sensor type, String value, int color) {
         try {
             int position = mMapPositions.get(type);
-            updateValue(position, value);
+            updateValue(position, value, color);
         } catch (NullPointerException e) {
             //e.printStackTrace();
         }

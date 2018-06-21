@@ -24,8 +24,8 @@ public class SplashActivity extends Activity {
     private Intent intentMain;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onResume() {
+        super.onResume();
 
         ctx = this;
         try {
@@ -34,7 +34,9 @@ public class SplashActivity extends Activity {
             e.printStackTrace();
         }
 
-        CreateIotOptions();
+        // TODO: developer could decide options here
+        //CreateIotOptions();
+        lunchLoRaDemo();
     }
 
     public void CreateIotOptions() {
@@ -48,9 +50,7 @@ public class SplashActivity extends Activity {
                     dialog.dismiss();
                     CreateBLEOptions();
                 } else if (item == IOT_ITEM_LORA) {
-                    intentMain = new Intent(getApplication(), com.example.lora.http.MainActivity.class);
-                    startActivity(intentMain);
-                    finish();
+                    lunchLoRaDemo();
                 }
             }
         });
@@ -75,14 +75,26 @@ public class SplashActivity extends Activity {
                         Toast.makeText(ctx, values[BLE_ITEM_NORDIC], Toast.LENGTH_LONG).show();
                         break;
                 }
-                intentMain = new Intent(getApplication(), com.example.bletestv3.MainActivity.class);
+
                 dialog.dismiss();
-                startActivity(intentMain);
-                finish();
+                lunchBleTest();
             }
         });
 
         builder.create().show();
+    }
+
+    private void lunchBleTest() {
+        intentMain = new Intent(getApplication(), com.example.bletestv3.MainActivity.class);
+        startActivity(intentMain);
+        finish();
+    }
+
+    private void lunchLoRaDemo() {
+        intentMain = new Intent(getApplication(), com.example.lora.http.MainActivity.class);
+        startActivity(intentMain);
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        finish();
     }
 
 

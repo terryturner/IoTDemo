@@ -1,5 +1,6 @@
 package com.example.goldtek.iot.demo;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
@@ -17,5 +18,14 @@ public class GoldtekApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+
+
+
+        System.exit(0);
     }
 }

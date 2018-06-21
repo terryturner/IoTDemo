@@ -30,6 +30,7 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
     private PahoMqttClient pahoMqttClient;
     private MqttAndroidClient client;
     private String mRawOutput = "";
+    private boolean mConnected = false;
 
     public RaspberryGwConnector2(Context context) {
         mContext = context;
@@ -44,11 +45,18 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
         client = pahoMqttClient.getMqttClient(mContext, url, Constants.CLIENT_ID);
         client.setCallback(this);
 
-        return true;
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return mConnected;
     }
 
     @Override
     public void disconnect() {
+        Log.i(TAG, "call disconnect");
         if (client == null) return;
 
         unSubscribe(Constants.SUBSCRIBE_TOPIC);
@@ -59,11 +67,13 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
             e.printStackTrace();
         }
         client = null;
+        mConnected = false;
     }
 
     @Override
     public void stop() {
         // TODO: disable palo MqttService?!
+        disconnect();
     }
 
     @Override
@@ -150,6 +160,7 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
         Log.i(TAG, "connect done: " + reconnect + " " + serverURI);
+        mConnected = true;
         if (!reconnect)
             subscribe(Constants.SUBSCRIBE_TOPIC);
     }

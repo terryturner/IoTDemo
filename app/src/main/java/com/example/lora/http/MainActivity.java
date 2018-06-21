@@ -4,11 +4,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.example.goldtek.iot.demo.R;
 import com.example.goldtek.iot.demo.ServerValidator;
@@ -28,10 +27,11 @@ import com.example.goldtek.storage.StorageCommon;
 
 import java.util.Locale;
 
-public class MainActivity extends Activity implements IGetSensors.Callback, View.OnClickListener {
+public class MainActivity extends Activity implements IGetSensors.Callback, View.OnClickListener, LoRaConnectDialog.OnClickListener {
     private IGetSensors mGetSensors = new GetSensors();
     private IStorage mStorage = new PrivatePreference(this);
     private SensorsAdapter mSensorAdapter;
+    private WarningChecker mWarningChecker = new WarningChecker();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,6 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         RecyclerView sensorList = findViewById(R.id.lora_sensors);
         sensorList.setLayoutManager(new GridLayoutManager(this, 2));
         sensorList.setAdapter(mSensorAdapter);
-
     }
 
     @Override
@@ -70,14 +69,6 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
     protected void onResume() {
         super.onResume();
         mStorage.init(StorageCommon.FILE, Context.MODE_PRIVATE);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        //mGetSensors.disconnect();
-        //setConnectionEnabled(false);
-        //mGetSensors.removeValueChangeListener(this);
     }
 
     @Override
@@ -108,7 +99,6 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
                         onShowConnectDialog();
                     }
                 }
-
                 break;
             case R.id.imgAbout:
                 final Dialog dialog = new Dialog(this, R.style.MyCustomDialog);
@@ -126,6 +116,7 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
                 break;
             case R.id.img_back:
                 new AlertDialog.Builder(MainActivity.this)
+                        .setIcon(android.R.drawable.ic_menu_help)
                         .setTitle(R.string.back_title)
                         .setMessage(R.string.back_msg)
                         .setPositiveButton(R.string.back_ok, new DialogInterface.OnClickListener() {
@@ -137,6 +128,17 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
                         .setNegativeButton(R.string.cancel, null)
                         .show();
                 break;
+        }
+    }
+
+    @Override
+    public void onClick(boolean correctIP, String ip, int gw) {
+        if (correctIP) {
+            mGetSensors.connect(gw, ip);
+            mGetSensors.setOnValuesChangeListener(MainActivity.this);
+            setConnectionEnabled(true);
+        } else {
+            Toast.makeText(MainActivity.this, "Error format: " + ip, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -191,7 +193,7 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
                 msg = String.format(Locale.getDefault(), "%1$,.2f mt", value.getFloat(IGetSensors.KEY_MAGNETIC, 0));
                 break;
             case Proximity:
-                msg = String.format(Locale.getDefault(), "%d mm", value.getInt(IGetSensors.KEY_PROXIMITY, 0));
+                msg = String.format(Locale.getDefault(), "%.2f mm", value.getInt(IGetSensors.KEY_PROXIMITY, 0)/100.0);
                 break;
             case Temperature:
                 msg = String.format(Locale.getDefault(), "%d °C", value.getInt(IGetSensors.KEY_TEMPERATURE_C, 0));
@@ -206,53 +208,15 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
             @Override
             public void run() {
                 if (mSensorAdapter != null) {
-                    mSensorAdapter.updateValue(type, updateValue);
+                    boolean warning = mWarningChecker.update(type, value);
+                    mSensorAdapter.updateValue(type, updateValue, warning ? Color.RED : Color.BLACK);
                 }
             }
         });
     }
 
     private void onShowConnectDialog() {
-        final Dialog dialog = new Dialog(this, R.style.MyCustomDialog);
-        dialog.setContentView(R.layout.dialog_login);
-        Button dialogButton = dialog.findViewById(R.id.btnOK);
-        if (mStorage.getString(StorageCommon.LORA_SERVER_IP) != null) {
-            EditText etServer = dialog.findViewById(R.id.etServer);
-            etServer.setText(mStorage.getString(StorageCommon.LORA_SERVER_IP));
-        }
-
-        final Spinner dialogGwSelector = dialog.findViewById(R.id.lora_gw_selector);
-        ArrayAdapter gw_options = ArrayAdapter.createFromResource(
-                this, R.array.lora_gw_connectors, R.layout.spinner_item);
-        gw_options.setDropDownViewResource(R.layout.spinner_item);
-        dialogGwSelector.setAdapter(gw_options);
-        dialogGwSelector.setSelection(mStorage.getInt(StorageCommon.LORA_GW_SELECTOR));
-
-
-        // if button is clicked, close the custom dialog
-        dialogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                ServerValidator validator = new ServerValidator();
-                EditText etServer = ((ViewGroup) v.getParent()).findViewById(R.id.etServer);
-                int gw = dialogGwSelector.getSelectedItemPosition();
-
-                String ip = etServer.getText().toString();
-                if (validator.isValidIPV4(ip)) {
-                    mGetSensors.connect(gw, ip);
-                    mGetSensors.setOnValuesChangeListener(MainActivity.this);
-
-                    mStorage.putInt(StorageCommon.LORA_GW_SELECTOR, gw);
-                    mStorage.putString(StorageCommon.LORA_SERVER_IP, ip);
-                    setConnectionEnabled(true);
-                } else {
-                    Toast.makeText(MainActivity.this, "Error format: " + ip, Toast.LENGTH_SHORT).show();
-                }
-
-                dialog.dismiss();
-            }
-        });
+        LoRaConnectDialog dialog = new LoRaConnectDialog(this, R.style.MyCustomDialog, this);
         dialog.show();
     }
 
