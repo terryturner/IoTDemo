@@ -27,7 +27,7 @@ public class register extends Activity {
     EditText Name,Phone,UserName,Password,ConPassword;
     String  name,phone,username,password,conpass;
     AlertDialog.Builder builder;
-    int ip1 = 114, ip2 = 24, ip3 = 145, ip4 = 201, ip5 = 5051;
+    int ip1 = 114, ip2 = 24, ip3 = 145, ip4 = 201, ip5 = 5053;
     String reg_url = "http://" +String.valueOf(ip1) + "." + String.valueOf(ip2) + "." + String.valueOf(ip3) + "." + String.valueOf(ip4) + ":" +String.valueOf(ip5) + "/register.php";
 
     @Override

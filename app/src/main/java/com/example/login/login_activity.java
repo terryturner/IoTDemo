@@ -40,7 +40,7 @@ public class login_activity extends Activity {
     Button login_button;
     EditText UserName,Password;
     String username,password;
-    int ip1 = 114, ip2 = 24, ip3 = 145, ip4 = 201, ip5 = 5051;
+    int ip1 = 114, ip2 = 24, ip3 = 145, ip4 = 201, ip5 = 5053;
     String login_url = "http://" +String.valueOf(ip1) + "." + String.valueOf(ip2) + "." + String.valueOf(ip3) + "." + String.valueOf(ip4) + ":" +String.valueOf(ip5) + "/login.php";
     AlertDialog.Builder builder;
     private Handler mUI_Handler = new Handler();
