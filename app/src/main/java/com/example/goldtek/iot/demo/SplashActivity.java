@@ -36,7 +36,8 @@ public class SplashActivity extends Activity {
 
         // TODO: developer could decide options here
         //CreateIotOptions();
-        lunchLoRaDemo();
+        //lunchLoRaDemo();
+        login();
     }
 
     public void CreateIotOptions() {
@@ -92,6 +93,13 @@ public class SplashActivity extends Activity {
 
     private void lunchLoRaDemo() {
         intentMain = new Intent(getApplication(), com.example.lora.http.MainActivity.class);
+        startActivity(intentMain);
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        finish();
+    }
+
+    private void login() {
+        intentMain = new Intent(getApplication(), com.example.login.login_activity.class);
         startActivity(intentMain);
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         finish();

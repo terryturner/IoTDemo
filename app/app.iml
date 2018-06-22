@@ -121,6 +121,7 @@
     <orderEntry type="library" name="Gradle: android.arch.core:common:1.0.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: org.eclipse.paho:org.eclipse.paho.android.service:1.1.1@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-media-compat-27.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.mcxiaoke.volley:library:1.0.19@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-core-utils-27.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-core-ui-27.0.1" level="project" />
     <orderEntry type="library" name="Gradle: android.arch.lifecycle:runtime-1.0.0" level="project" />
