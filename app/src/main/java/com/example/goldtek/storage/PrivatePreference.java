@@ -58,4 +58,19 @@ public class PrivatePreference implements IStorage {
         }
         return 0;
     }
+
+    @Override
+    public void putBoolean(String key, boolean value) {
+        if (mInitFlag) {
+            mPref.edit().putBoolean(key, value).commit();
+        }
+    }
+
+    @Override
+    public boolean getBoolean(String key) {
+        if (mInitFlag) {
+            return mPref.getBoolean(key, false);
+        }
+        return false;
+    }
 }

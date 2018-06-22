@@ -1,7 +1,11 @@
 package com.example.lora.http;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.example.lora.http.mqtt.Constants;
@@ -42,7 +46,19 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
         url = String.format(Constants.MQTT_VM_BROKER_URL_TCP_FORMAT, url);
         Log.i(TAG, "connect " + url);
 
-        client = pahoMqttClient.getMqttClient(mContext, url, Constants.CLIENT_ID);
+        String clientID = Constants.CLIENT_ID;
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.READ_PHONE_STATE) != PackageManager
+                .PERMISSION_GRANTED) {
+
+            return false;
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                clientID = Build.getSerial();
+            } else {
+                clientID = Build.SERIAL;
+            }
+        }
+        client = pahoMqttClient.getMqttClient(mContext, url, clientID);
         client.setCallback(this);
 
         try {
@@ -86,12 +102,6 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
                 //publish(msg);
 
                 synchronized (mRawOutput) {
-                    if (mRawOutput != null) {
-                        Log.i(TAG, "raw: " + mRawOutput.length() + " => " + mRawOutput );
-                        int newLineIndex = mRawOutput.indexOf("\n");
-                        if (newLineIndex > 0) mRawOutput = mRawOutput.substring(0, newLineIndex).trim();
-                        Log.i(TAG, "fine: " + mRawOutput.length() + " => " + mRawOutput );
-                    }
                     try {
                         if (mRawOutput != null && Pattern.compile(PATTERN_ATGG_GET_DATA).matcher(mRawOutput).matches()) {
                             String[] values = mRawOutput.split(",");
@@ -172,11 +182,10 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
 
     @Override
     public void messageArrived(String topic, MqttMessage mqttMessage) {
-        Log.i(TAG, "receive: " + topic + " " + mqttMessage.toString());
+        Log.i(TAG, "receive: " + topic + " " + mqttMessage.getPayload().length + " " + mqttMessage.toString());
 
         synchronized (mRawOutput) {
             //mRawOutput = String.format("VR=%d,HUM=%d,TMP=%d,Gx=%d,Gy=%d,Gz=%d", r.nextInt(4000), r.nextInt(100), r.nextInt(50), r.nextInt(1000), r.nextInt(1000), r.nextInt(1000));
-
             int nullIdx = -1;
             for (int i=0; i<mqttMessage.getPayload().length; i++) {
                 if (mqttMessage.getPayload()[i] == 0) {
@@ -190,6 +199,11 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
                 mRawOutput = new String(mqttMessage.getPayload(), 0, nullIdx, StandardCharsets.ISO_8859_1).trim();
             else
                 mRawOutput = mqttMessage.toString().trim();
+
+            int newLineIndex = mRawOutput.indexOf("\n");
+            if (newLineIndex > 0) mRawOutput = mRawOutput.substring(0, newLineIndex).trim();
+            Log.i(TAG, "fine: " + mRawOutput.length() + " => " + mRawOutput );
+
         }
     }
 

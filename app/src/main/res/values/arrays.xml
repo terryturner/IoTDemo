@@ -22,4 +22,95 @@
         <item>Ameba</item>
         <item>Raspberry</item>
     </string-array>
+
+    <string-array name="humidity_warning_labels">
+        <item>100 %</item>
+        <item>90 %</item>
+        <item>80 %</item>
+        <item>70 %</item>
+        <item>60 %</item>
+        <item>50 %</item>
+        <item>40 %</item>
+        <item>30 %</item>
+        <item>20 %</item>
+        <item>10 %</item>
+        <item>0 %</item>
+    </string-array>
+
+    <integer-array name="humidity_warning_values">
+        <item>100</item>
+        <item>90</item>
+        <item>80</item>
+        <item>70</item>
+        <item>60</item>
+        <item>50</item>
+        <item>40</item>
+        <item>30</item>
+        <item>20</item>
+        <item>10</item>
+        <item>0</item>
+    </integer-array>
+
+    <string-array name="temperature_warning_labels">
+        <item>50°C</item>
+        <item>40°C</item>
+        <item>30°C</item>
+        <item>20°C</item>
+        <item>10°C</item>
+        <item>0°C</item>
+    </string-array>
+
+    <integer-array name="temperature_warning_values">
+        <item>50</item>
+        <item>40</item>
+        <item>30</item>
+        <item>20</item>
+        <item>10</item>
+        <item>0</item>
+    </integer-array>
+
+    <string-array name="vr_warning_labels">
+        <item>10 mm</item>
+        <item>9 mm</item>
+        <item>8 mm</item>
+        <item>7 mm</item>
+        <item>6 mm</item>
+        <item>5 mm</item>
+        <item>4 mm</item>
+        <item>3 mm</item>
+        <item>2 mm</item>
+        <item>1 mm</item>
+    </string-array>
+
+    <integer-array name="vr_warning_values">
+        <item>10</item>
+        <item>9</item>
+        <item>8</item>
+        <item>7</item>
+        <item>6</item>
+        <item>5</item>
+        <item>4</item>
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
+    </integer-array>
+
+    <string-array name="acc_warning_labels">
+        <item>30 mg</item>
+        <item>25 mg</item>
+        <item>20 mg</item>
+        <item>15 mg</item>
+        <item>10 mg</item>
+        <item>5 mg</item>
+    </string-array>
+
+    <integer-array name="acc_warning_values">
+        <item>30</item>
+        <item>25</item>
+        <item>20</item>
+        <item>15</item>
+        <item>10</item>
+        <item>5</item>
+    </integer-array>
+
 </resources>

@@ -103,6 +103,9 @@
     <string name="cancel">Cancel</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
     <string name="hint_insert_server_ip">Please insert the cloud IP</string>
+    <string name="hint_switch_warning_over_limit">Over Limit</string>
+    <string name="hint_switch_warning_below_limit">Below Limit</string>
+
 
     <string name="large_text">
         "Material is the metaphor.\n\n"

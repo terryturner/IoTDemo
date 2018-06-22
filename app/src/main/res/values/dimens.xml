@@ -107,7 +107,7 @@
     <dimen name="setTempButtonDimen">50.0dip</dimen>
     <dimen name="settings_toggle_circle_diameter">24.0dip</dimen>
     <dimen name="settings_toggle_circle_radius">12.0dip</dimen>
-    <dimen name="settings_toggle_height">24.0dip</dimen>
+    <dimen name="settings_toggle_height">30.0dip</dimen>
     <dimen name="settings_toggle_width">48.0dip</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="icon_sensor">64dp</dimen>

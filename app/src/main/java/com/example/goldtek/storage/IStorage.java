@@ -12,4 +12,7 @@ public interface IStorage {
 
     void putInt(String key, int value);
     int getInt(String key);
+
+    void putBoolean(String key, boolean value);
+    boolean getBoolean(String key);
 }

@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.goldtek.iot.demo.GoldtekApplication;
 import com.example.goldtek.iot.demo.R;
 import com.example.goldtek.iot.demo.ServerValidator;
 import com.example.goldtek.storage.IStorage;
@@ -31,7 +32,7 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
     private IGetSensors mGetSensors = new GetSensors();
     private IStorage mStorage = new PrivatePreference(this);
     private SensorsAdapter mSensorAdapter;
-    private WarningChecker mWarningChecker = new WarningChecker();
+    private WarningChecker mWarningChecker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,7 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
     protected void onResume() {
         super.onResume();
         mStorage.init(StorageCommon.FILE, Context.MODE_PRIVATE);
+        mWarningChecker = new WarningChecker(mStorage);
     }
 
     @Override
@@ -224,6 +226,7 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         if (enabled) {
             ((Button) findViewById(R.id.btn_select)).setText(R.string.disconnect);
             findViewById(R.id.btn_select).setBackgroundResource(R.drawable.btn_disable_background);
+            mWarningChecker.updateConditions();
         } else {
             ((Button) findViewById(R.id.btn_select)).setText(R.string.connect);
             findViewById(R.id.btn_select).setBackgroundResource(R.drawable.btn_background);
