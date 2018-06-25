@@ -108,9 +108,17 @@ public class login_activity extends Activity {
                     builder.setTitle("Something went wrong");
                     displayAlert("Enter a valid username and password");
                 }
-                else if (username.equals(CommonSettings.USER_ROOT_NAME) || password.equals(CommonSettings.USER_ROOT_NAME)){
+                else if (username.equals(CommonSettings.USER_ROOT_NAME) && password.equals(CommonSettings.USER_ROOT_NAME)){
                     Intent intent = new Intent();
                     intent.setComponent(new ComponentName("com.thn.iotmqttdashboard", "com.thn.iotmqttdashboard.activity.ConnectionListActivity"));
+                    startActivity(intent);
+                }
+                else if (username.equals(CommonSettings.USER_ADMIN_NAME) && password.equals(CommonSettings.USER_ADMIN_NAME)) {
+                    Intent intent = new Intent(getApplication(), com.example.lora.http.MainActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(CommonSettings.USER_NAME, CommonSettings.USER_ADMIN_NAME);
+                    bundle.putString(CommonSettings.USER_MAIL, CommonSettings.USER_ROOT_MAIL);
+                    intent.putExtras(bundle);
                     startActivity(intent);
                 }
                 else

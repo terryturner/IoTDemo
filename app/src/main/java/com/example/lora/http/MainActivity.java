@@ -22,20 +22,24 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.goldtek.iot.demo.CommonSettings;
 import com.example.goldtek.iot.demo.R;
 import com.example.goldtek.storage.IStorage;
 import com.example.goldtek.storage.PrivatePreference;
 import com.example.goldtek.storage.StorageCommon;
+import com.example.lora.http.mqtt.Constants;
 
 import java.util.Locale;
 
-public class MainActivity extends Activity implements IGetSensors.Callback, View.OnClickListener, LoRaConnectDialog.OnClickListener {
+public class MainActivity extends Activity implements IGetSensors.Callback, View.OnClickListener, LoRaDialogCallback {
     private IGetSensors mGetSensors = new GetSensors();
     private IStorage mStorage = new PrivatePreference(this);
     private RecyclerView mSensorList;
     private SensorsAdapter mSensorAdapter;
     private WarningChecker mWarningChecker;
     private Vibrator mVibrator;
+
+    private String mAccount = null;
 
     private final static int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 0xA1;
 
@@ -45,14 +49,24 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         mVibrator = (Vibrator) getSystemService(Service.VIBRATOR_SERVICE);
+        mStorage.init(StorageCommon.FILE, Context.MODE_PRIVATE);
+        mWarningChecker = new WarningChecker(mStorage);
+        mWarningChecker.updateConditions();
 
-        setContentView(R.layout.activity_lora_main);
+        mAccount = getIntent().getStringExtra(CommonSettings.USER_NAME);
+        Log.i("terry", "login with: " + mAccount);
+
+        if (mAccount.equalsIgnoreCase(CommonSettings.USER_ADMIN_NAME))
+            setContentView(R.layout.activity_lora_root_main);
+        else
+            setContentView(R.layout.activity_lora_main);
+
         setTitle(R.string.lora_title_name);
+        ((TextView) findViewById(R.id.deviceName)).setText("Connect");
         findViewById(R.id.btn_select).setTag(false);
         findViewById(R.id.btn_select).setOnClickListener(this);
         findViewById(R.id.imgAbout).setOnClickListener(this);
         findViewById(R.id.img_back).setOnClickListener(this);
-
 
         mSensorList = findViewById(R.id.lora_sensors);
         mSensorList.setLayoutManager(new GridLayoutManager(this, 2));
@@ -65,6 +79,9 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         }
         mSensorAdapter = new SensorsAdapter(this, sensors, icons);
         mSensorList.setAdapter(mSensorAdapter);
+
+        if (!mAccount.equalsIgnoreCase(CommonSettings.USER_ADMIN_NAME) && !mAccount.equalsIgnoreCase(CommonSettings.USER_ROOT_NAME))
+            connect(2, Constants.MQTT_PUB_BROKER_IP);
     }
 
     @Override
@@ -77,9 +94,6 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
     @Override
     protected void onResume() {
         super.onResume();
-        mStorage.init(StorageCommon.FILE, Context.MODE_PRIVATE);
-        mWarningChecker = new WarningChecker(mStorage);
-        mWarningChecker.updateConditions();
 
         //requestReadPhonePermission();
     }
@@ -123,15 +137,19 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_select:
-                if (view.getTag() instanceof Boolean) {
+                if (!mAccount.equalsIgnoreCase(CommonSettings.USER_ADMIN_NAME)) {
+                    onShowConfigDialog();
+                } else {
+                    if (view.getTag() instanceof Boolean) {
 
-                    boolean state = (boolean) view.getTag();
-                    if (state) {
-                        mGetSensors.disconnect();
-                        mGetSensors.removeValueChangeListener(this);
-                        setConnectionEnabled(false);
-                    } else {
-                        onShowConnectDialog();
+                        boolean state = (boolean) view.getTag();
+                        if (state) {
+                            mGetSensors.disconnect();
+                            mGetSensors.removeValueChangeListener(this);
+                            setConnectionEnabled(false);
+                        } else {
+                            onShowConnectDialog();
+                        }
                     }
                 }
                 break;
@@ -174,9 +192,7 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
                 return;
             }
 
-            mWarningChecker.updateConditions();
-            mGetSensors.connect(gw, ip);
-            mGetSensors.setOnValuesChangeListener(MainActivity.this);
+            connect(gw, ip);
             setConnectionEnabled(true);
         } else {
             Toast.makeText(MainActivity.this, "Error format: " + ip, Toast.LENGTH_SHORT).show();
@@ -184,12 +200,21 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
     }
 
     @Override
+    public void onConfig() {
+        mWarningChecker.updateConditions();
+    }
+
+    @Override
     public void onConnect(boolean result) {
         if (!result) {
             mGetSensors.disconnect();
             mGetSensors.removeValueChangeListener(this);
-            setConnectionEnabled(false);
-            Toast.makeText(MainActivity.this, R.string.not_reachable_server, Toast.LENGTH_SHORT).show();
+            if (mAccount.equalsIgnoreCase(CommonSettings.USER_ADMIN_NAME)) {
+                setConnectionEnabled(false);
+                Toast.makeText(MainActivity.this, R.string.not_reachable_server, Toast.LENGTH_SHORT).show();
+            } else {
+                connect(2, Constants.MQTT_PUB_BROKER_IP);
+            }
         }
     }
 
@@ -262,8 +287,17 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
     }
 
     private void onShowConnectDialog() {
-        LoRaConnectDialog dialog = new LoRaConnectDialog(this, R.style.MyCustomDialog, this);
-        dialog.show();
+        if (mAccount.equalsIgnoreCase(CommonSettings.USER_ADMIN_NAME) || mAccount.equalsIgnoreCase(CommonSettings.USER_ROOT_NAME)) {
+            LoRaConnectDialog dialog = new LoRaConnectDialog(this, R.style.MyCustomDialog, this);
+            dialog.show();
+        }
+    }
+
+    private void onShowConfigDialog() {
+        if (!mAccount.equalsIgnoreCase(CommonSettings.USER_ADMIN_NAME)) {
+            LoRaConfigDialog dialog = new LoRaConfigDialog(this, R.style.MyCustomDialog, this);
+            dialog.show();
+        }
     }
 
     private void setConnectionEnabled(boolean enabled) {
@@ -286,5 +320,11 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         } else {
             return false;
         }
+    }
+
+    private void connect(int gw, String ip) {
+        mWarningChecker.updateConditions();
+        mGetSensors.connect(gw, ip);
+        mGetSensors.setOnValuesChangeListener(MainActivity.this);
     }
 }

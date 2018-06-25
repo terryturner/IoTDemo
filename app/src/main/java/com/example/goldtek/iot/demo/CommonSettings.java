@@ -8,4 +8,5 @@ public class CommonSettings {
     public static final String USER_MAIL = "email";
     public static final String USER_ROOT_NAME = "root";
     public static final String USER_ROOT_MAIL = "root@gmail.com";
+    public static final String USER_ADMIN_NAME = "admin";
 }

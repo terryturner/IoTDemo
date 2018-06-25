@@ -24,7 +24,7 @@ import com.example.goldtek.storage.StorageCommon;
 /**
  * Created by Terry on 2018/06/21.
  */
-public class LoRaConnectDialog extends Dialog implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
+public class LoRaConfigDialog extends Dialog implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
     private final static String SELECT_HUM = "Humidity";
     private final static String SELECT_TEMP = "Temperature";
     private final static String SELECT_VR = "Proximity";
@@ -33,23 +33,14 @@ public class LoRaConnectDialog extends Dialog implements View.OnClickListener, C
     private final LoRaDialogCallback mClick;
     private final IStorage mStorage;
     private final Button mButtonOK;
-    private final EditText mServerAddress;
-    private final ImageView mImgSettings;
-    private final ViewGroup mSettingsPanel;
     private final Spinner mSensorLimitSelector;
-    private final Spinner mGatewaySelector;
 
     private final ToggleButton mOverLimitSwitch;
     private final ToggleButton mBelowLimitSwitch;
     private final Spinner mOverLimitSpinner;
     private final Spinner mBelowLimitSpinner;
 
-
-    public interface OnClickListener {
-        void onClick(boolean correctIP, String ip, int gw);
-    }
-
-    public LoRaConnectDialog(Context context, int themeResId, LoRaDialogCallback listener) {
+    public LoRaConfigDialog(Context context, int themeResId, LoRaDialogCallback listener) {
         super(context, themeResId);
         mStorage = new PrivatePreference(context);
         mStorage.init(StorageCommon.FILE, Context.MODE_PRIVATE);
@@ -57,23 +48,17 @@ public class LoRaConnectDialog extends Dialog implements View.OnClickListener, C
 
         setContentView(R.layout.dialog_lora_connect);
         mButtonOK = findViewById(R.id.btnOK);
-        mServerAddress = findViewById(R.id.etServer);
-        mImgSettings = findViewById(R.id.settings);
-        mSettingsPanel = findViewById(R.id.settingsPanel);
+        findViewById(R.id.etServer).setVisibility(View.GONE);
+        findViewById(R.id.settings).setVisibility(View.GONE);
+        findViewById(R.id.settingsPanel).setVisibility(View.VISIBLE);
         mSensorLimitSelector = findViewById(R.id.lora_sensor_config_selector);
-        mGatewaySelector = findViewById(R.id.lora_gw_selector);
+        findViewById(R.id.lora_gw_selector).setVisibility(View.GONE);
 
         mOverLimitSwitch = findViewById(R.id.toggle_over_limit);
         mBelowLimitSwitch = findViewById(R.id.toggle_below_limit);
         mOverLimitSpinner = findViewById(R.id.spinner_over_limit);
         mBelowLimitSpinner = findViewById(R.id.spinner_below_limit);
 
-
-
-        if (mStorage.getString(StorageCommon.LORA_SERVER_IP) != null) {
-            mServerAddress.setText(mStorage.getString(StorageCommon.LORA_SERVER_IP));
-        }
-        mImgSettings.setOnClickListener(this);
         mButtonOK.setOnClickListener(this);
 
         ArrayAdapter sensor_list = ArrayAdapter.createFromResource(
@@ -81,12 +66,6 @@ public class LoRaConnectDialog extends Dialog implements View.OnClickListener, C
         sensor_list.setDropDownViewResource(R.layout.dropdown_spinner_item);
         mSensorLimitSelector.setAdapter(sensor_list);
         mSensorLimitSelector.setOnItemSelectedListener(this);
-
-        ArrayAdapter gw_options = ArrayAdapter.createFromResource(
-                context, R.array.lora_gw_connectors, R.layout.spinner_item);
-        gw_options.setDropDownViewResource(R.layout.dropdown_spinner_item);
-        mGatewaySelector.setAdapter(gw_options);
-        mGatewaySelector.setSelection(mStorage.getInt(StorageCommon.LORA_GW_SELECTOR));
 
         mOverLimitSwitch.setOnCheckedChangeListener(this);
         mBelowLimitSwitch.setOnCheckedChangeListener(this);
@@ -98,28 +77,8 @@ public class LoRaConnectDialog extends Dialog implements View.OnClickListener, C
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.settings:
-                if (mSettingsPanel.getVisibility() == View.GONE) {
-                    mSettingsPanel.setVisibility(View.VISIBLE);
-                } else {
-                    mSettingsPanel.setVisibility(View.GONE);
-                }
-                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(mServerAddress.getWindowToken(), 0);
-
-                break;
             case R.id.btnOK:
-                ServerValidator validator = new ServerValidator();
-                int gw = mGatewaySelector.getSelectedItemPosition();
-
-                String ip = mServerAddress.getText().toString();
-                if (validator.isValidIPV4(ip)) {
-                    mStorage.putInt(StorageCommon.LORA_GW_SELECTOR, gw);
-                    mStorage.putString(StorageCommon.LORA_SERVER_IP, ip);
-                    mClick.onClick(true, ip, gw);
-                } else {
-                    mClick.onClick(false, ip, gw);
-                }
+                mClick.onConfig();
 
                 dismiss();
                 break;

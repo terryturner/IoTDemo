@@ -64,6 +64,7 @@
     <string name="ready">Ready</string>
     <string name="disconnect">Disconnect</string>
     <string name="connect">Connect</string>
+    <string name="config">Config</string>
     <string name="not_reachable_server">Could not reach server</string>
     <string name="server">Server</string>
     <string name="dummy">Dummy</string>

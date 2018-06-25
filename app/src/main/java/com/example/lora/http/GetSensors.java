@@ -42,6 +42,11 @@ public class GetSensors implements IGetSensors {
     }
 
     @Override
+    public void keepconnect(final int gw, final String ip) {
+
+    }
+
+    @Override
     public void connect(final int gw, final String ip) {
 
         mWorkHandler.post(new Runnable() {

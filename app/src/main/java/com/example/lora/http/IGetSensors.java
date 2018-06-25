@@ -35,6 +35,7 @@ public interface IGetSensors {
         void onGetValue(Sensor type, Bundle value);
     }
 
+    void keepconnect(int gw, String url);
     void connect(int gw, String url);
     void disconnect();
     void stop();

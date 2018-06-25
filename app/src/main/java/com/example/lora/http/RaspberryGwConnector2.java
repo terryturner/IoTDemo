@@ -23,6 +23,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Random;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
@@ -48,7 +49,7 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
         url = String.format(Constants.MQTT_VM_BROKER_URL_TCP_FORMAT, url);
         Log.i(TAG, "connect " + url);
 
-        String clientID = Constants.CLIENT_ID;
+        String clientID = UUID.randomUUID().toString();
         /*
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.READ_PHONE_STATE) != PackageManager
                 .PERMISSION_GRANTED) {

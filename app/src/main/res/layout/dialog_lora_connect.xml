@@ -46,7 +46,7 @@
         android:id="@+id/settingsPanel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <Spinner
             android:id="@+id/lora_sensor_config_selector"
