@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.example.lora.http.mqtt.Constants;
@@ -34,6 +35,7 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
     private PahoMqttClient pahoMqttClient;
     private MqttAndroidClient client;
     private String mRawOutput = "";
+    private Bundle mRawBundle = new Bundle();
     private boolean mConnected = false;
 
     public RaspberryGwConnector2(Context context) {
@@ -50,7 +52,6 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.READ_PHONE_STATE) != PackageManager
                 .PERMISSION_GRANTED) {
 
-            return false;
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 clientID = Build.getSerial();
@@ -58,6 +59,7 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
                 clientID = Build.SERIAL;
             }
         }
+
         client = pahoMqttClient.getMqttClient(mContext, url, clientID);
         client.setCallback(this);
 
@@ -98,8 +100,31 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
         bundle.putBoolean(IGetSensors.KEY_RESPONSE_STATE, true);
         switch (type) {
             case ALL:
-                String msg = Calendar.getInstance().getTime().toString();
+                //String msg = Calendar.getInstance().getTime().toString();
                 //publish(msg);
+                synchronized (mRawBundle) {
+                    if (mRawBundle.getLong(IGetSensors.KEY_RESPONSE_TIME, -1) > 0 && mRawBundle.getByteArray(Constants.SUBSCRIBE_TOPIC) != null) {
+                        bundle.putLong(IGetSensors.KEY_RESPONSE_TIME, mRawBundle.getLong(IGetSensors.KEY_RESPONSE_TIME));
+
+                        int nullIdx = -1;
+                        byte[] payload = mRawBundle.getByteArray(Constants.SUBSCRIBE_TOPIC);
+
+                        for (int i=0; i<payload.length; i++) {
+                            if (payload[i] == 0) {
+                                nullIdx = i;
+                                break;
+                            }
+                        }
+
+                        if (nullIdx > 0)
+                            mRawOutput = new String(payload, 0, nullIdx, StandardCharsets.ISO_8859_1).trim();
+                        else
+                            mRawOutput = new String(payload).trim();
+
+                        int newLineIndex = mRawOutput.indexOf("\n");
+                        if (newLineIndex > 0) mRawOutput = mRawOutput.substring(0, newLineIndex).trim();
+                    }
+                }
 
                 synchronized (mRawOutput) {
                     try {
@@ -184,6 +209,7 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
     public void messageArrived(String topic, MqttMessage mqttMessage) {
         Log.i(TAG, "receive: " + topic + " " + mqttMessage.getPayload().length + " " + mqttMessage.toString());
 
+        /*
         synchronized (mRawOutput) {
             //mRawOutput = String.format("VR=%d,HUM=%d,TMP=%d,Gx=%d,Gy=%d,Gz=%d", r.nextInt(4000), r.nextInt(100), r.nextInt(50), r.nextInt(1000), r.nextInt(1000), r.nextInt(1000));
             int nullIdx = -1;
@@ -203,7 +229,12 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
             int newLineIndex = mRawOutput.indexOf("\n");
             if (newLineIndex > 0) mRawOutput = mRawOutput.substring(0, newLineIndex).trim();
             Log.i(TAG, "fine: " + mRawOutput.length() + " => " + mRawOutput );
+        }
+        */
 
+        synchronized (mRawBundle) {
+            mRawBundle.putLong(IGetSensors.KEY_RESPONSE_TIME, System.currentTimeMillis());
+            mRawBundle.putByteArray(topic, mqttMessage.getPayload());
         }
     }
 

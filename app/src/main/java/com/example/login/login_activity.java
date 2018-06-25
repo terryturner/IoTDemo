@@ -23,6 +23,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.goldtek.iot.demo.CommonSettings;
 import com.example.goldtek.iot.demo.R;
 
 import org.json.JSONArray;
@@ -40,7 +41,7 @@ public class login_activity extends Activity {
     Button login_button;
     EditText UserName,Password;
     String username,password;
-    int ip1 = 114, ip2 = 24, ip3 = 145, ip4 = 201, ip5 = 5051;
+    int ip1 = 114, ip2 = 32, ip3 = 130, ip4 = 154, ip5 = 5053;
     String login_url = "http://" +String.valueOf(ip1) + "." + String.valueOf(ip2) + "." + String.valueOf(ip3) + "." + String.valueOf(ip4) + ":" +String.valueOf(ip5) + "/login.php";
     AlertDialog.Builder builder;
     private Handler mUI_Handler = new Handler();
@@ -106,11 +107,11 @@ public class login_activity extends Activity {
                     builder.setTitle("Something went wrong");
                     displayAlert("Enter a valid username and password");
                 }
-                else if (username.equals("root") || password.equals("root")){
+                else if (username.equals(CommonSettings.USER_ROOT_NAME) || password.equals(CommonSettings.USER_ROOT_NAME)){
                     Intent intent = new Intent(getApplication(), com.example.lora.http.MainActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString("name","root");
-                    bundle.putString("email","root@gmail.com");
+                    bundle.putString(CommonSettings.USER_NAME, CommonSettings.USER_ROOT_NAME);
+                    bundle.putString(CommonSettings.USER_MAIL, CommonSettings.USER_ROOT_MAIL);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -149,8 +150,8 @@ public class login_activity extends Activity {
                                             //mem account and passowrd -
                                             Intent intent = new Intent(getApplication(), com.example.lora.http.MainActivity.class);
                                             Bundle bundle = new Bundle();
-                                            bundle.putString("name",jsonObject.getString("name"));
-                                            bundle.putString("email",jsonObject.getString("email"));
+                                            bundle.putString(CommonSettings.USER_NAME,jsonObject.getString(CommonSettings.USER_NAME));
+                                            bundle.putString(CommonSettings.USER_MAIL,jsonObject.getString(CommonSettings.USER_MAIL));
                                             intent.putExtras(bundle);
                                             startActivity(intent);
                                         }

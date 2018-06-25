@@ -6,6 +6,9 @@ package com.example.goldtek.storage;
 public class StorageCommon {
     public static final String FILE = "settings";
 
+    public static final String USER_NAME = "login_user_name";
+    public static final String USER_PASSWORD = "login_user_password";
+
     public static final String LORA_SERVER_IP = "lora_gw_ipv4_addr";
     public static final String LORA_GW_SELECTOR = "lora_gw_connector";
     public static final String HUM_OVER_LIMIT_SWITCH = "hum_over_limit_switch";

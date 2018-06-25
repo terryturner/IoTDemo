@@ -1,27 +1,28 @@
 package com.example.lora.http;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Activity;
+import android.os.Vibrator;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.goldtek.iot.demo.GoldtekApplication;
 import com.example.goldtek.iot.demo.R;
-import com.example.goldtek.iot.demo.ServerValidator;
 import com.example.goldtek.storage.IStorage;
 import com.example.goldtek.storage.PrivatePreference;
 import com.example.goldtek.storage.StorageCommon;
@@ -31,13 +32,19 @@ import java.util.Locale;
 public class MainActivity extends Activity implements IGetSensors.Callback, View.OnClickListener, LoRaConnectDialog.OnClickListener {
     private IGetSensors mGetSensors = new GetSensors();
     private IStorage mStorage = new PrivatePreference(this);
+    private RecyclerView mSensorList;
     private SensorsAdapter mSensorAdapter;
     private WarningChecker mWarningChecker;
+    private Vibrator mVibrator;
+
+    private final static int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 0xA1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        mVibrator = (Vibrator) getSystemService(Service.VIBRATOR_SERVICE);
 
         setContentView(R.layout.activity_lora_main);
         setTitle(R.string.lora_title_name);
@@ -46,6 +53,10 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         findViewById(R.id.imgAbout).setOnClickListener(this);
         findViewById(R.id.img_back).setOnClickListener(this);
 
+
+        mSensorList = findViewById(R.id.lora_sensors);
+        mSensorList.setLayoutManager(new GridLayoutManager(this, 2));
+
         String[] sensors = getResources().getStringArray(R.array.lora_sensors);
         int[] icons = new int[sensors.length];
         for (int idx=0; idx<sensors.length; idx++) {
@@ -53,10 +64,7 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
             icons[idx] = getResources().getIdentifier(sensor,"drawable",getPackageName());
         }
         mSensorAdapter = new SensorsAdapter(this, sensors, icons);
-
-        RecyclerView sensorList = findViewById(R.id.lora_sensors);
-        sensorList.setLayoutManager(new GridLayoutManager(this, 2));
-        sensorList.setAdapter(mSensorAdapter);
+        mSensorList.setAdapter(mSensorAdapter);
     }
 
     @Override
@@ -71,6 +79,9 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         super.onResume();
         mStorage.init(StorageCommon.FILE, Context.MODE_PRIVATE);
         mWarningChecker = new WarningChecker(mStorage);
+        mWarningChecker.updateConditions();
+
+        requestReadPhonePermission();
     }
 
     @Override
@@ -79,6 +90,28 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         mGetSensors.stop();
         mGetSensors.removeValueChangeListener(this);
         setConnectionEnabled(false);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_PHONE_STATE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
     }
 
     @Override
@@ -136,6 +169,12 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
     @Override
     public void onClick(boolean correctIP, String ip, int gw) {
         if (correctIP) {
+            if (requestReadPhonePermission()) {
+                Toast.makeText(MainActivity.this, "Please connect again due to permission", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            mWarningChecker.updateConditions();
             mGetSensors.connect(gw, ip);
             mGetSensors.setOnValuesChangeListener(MainActivity.this);
             setConnectionEnabled(true);
@@ -212,6 +251,11 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
                 if (mSensorAdapter != null) {
                     boolean warning = mWarningChecker.update(type, value);
                     mSensorAdapter.updateValue(type, updateValue, warning ? Color.RED : Color.BLACK);
+
+                    if (type.equals(Sensor.Accelerometer) && mVibrator.hasVibrator()) {
+                        if (warning) mVibrator.vibrate(1000);
+                        else mVibrator.cancel();
+                    }
                 }
             }
         });
@@ -226,7 +270,6 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         if (enabled) {
             ((Button) findViewById(R.id.btn_select)).setText(R.string.disconnect);
             findViewById(R.id.btn_select).setBackgroundResource(R.drawable.btn_disable_background);
-            mWarningChecker.updateConditions();
         } else {
             ((Button) findViewById(R.id.btn_select)).setText(R.string.connect);
             findViewById(R.id.btn_select).setBackgroundResource(R.drawable.btn_background);
@@ -234,4 +277,14 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         findViewById(R.id.btn_select).setTag(enabled);
     }
 
+    private boolean requestReadPhonePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
