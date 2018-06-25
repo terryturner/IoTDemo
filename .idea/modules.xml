@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://C:\Users\user\Desktop\iot_lora_dmo\IoTDemo\GTIoTDemo.iml" filepath="C:\Users\user\Desktop\iot_lora_dmo\IoTDemo\GTIoTDemo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/IoTDemo.iml" filepath="$PROJECT_DIR$/IoTDemo.iml" />
-      <module fileurl="file://C:\Users\user\Desktop\iot_lora_dmo\IoTDemo\IoTDemo.iml" filepath="C:\Users\user\Desktop\iot_lora_dmo\IoTDemo\IoTDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GTIoTDemo.iml" filepath="$PROJECT_DIR$/GTIoTDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

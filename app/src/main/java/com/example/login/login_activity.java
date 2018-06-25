@@ -1,6 +1,7 @@
 package com.example.login;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -107,11 +108,8 @@ public class login_activity extends Activity {
                     displayAlert("Enter a valid username and password");
                 }
                 else if (username.equals("root") || password.equals("root")){
-                    Intent intent = new Intent(getApplication(), com.example.lora.http.MainActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("name","root");
-                    bundle.putString("email","root@gmail.com");
-                    intent.putExtras(bundle);
+                    Intent intent = new Intent();
+                    intent.setComponent(new ComponentName("com.thn.iotmqttdashboard", "com.thn.iotmqttdashboard.activity.ConnectionListActivity"));
                     startActivity(intent);
                 }
                 else
