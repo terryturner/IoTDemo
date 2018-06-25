@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
  */
 public interface IGetSensors {
     String KEY_RESPONSE_STATE = "response_state";
+    String KEY_RESPONSE_TIME = "response_time";
     String KEY_ACCELEROMETER_X = "acc_x";
     String KEY_ACCELEROMETER_Y = "acc_y";
     String KEY_ACCELEROMETER_Z = "acc_z";
@@ -25,6 +26,8 @@ public interface IGetSensors {
     String KEY_TEMPERATURE_C = "temperature_celsius";
     String KEY_VIBRATION = "vibration_mm";
     String KEY_BATTERY = "battery_mh";
+
+    int VALUE_DEFAULT = 0;
 
     interface Callback {
         void onConnect(boolean result);

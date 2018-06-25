@@ -24,6 +24,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.goldtek.iot.demo.CommonSettings;
 import com.example.goldtek.iot.demo.R;
 
 import org.json.JSONArray;
@@ -107,7 +108,7 @@ public class login_activity extends Activity {
                     builder.setTitle("Something went wrong");
                     displayAlert("Enter a valid username and password");
                 }
-                else if (username.equals("root") || password.equals("root")){
+                else if (username.equals(CommonSettings.USER_ROOT_NAME) || password.equals(CommonSettings.USER_ROOT_NAME)){
                     Intent intent = new Intent();
                     intent.setComponent(new ComponentName("com.thn.iotmqttdashboard", "com.thn.iotmqttdashboard.activity.ConnectionListActivity"));
                     startActivity(intent);
@@ -147,8 +148,8 @@ public class login_activity extends Activity {
                                             //mem account and passowrd -
                                             Intent intent = new Intent(getApplication(), com.example.lora.http.MainActivity.class);
                                             Bundle bundle = new Bundle();
-                                            bundle.putString("name",jsonObject.getString("name"));
-                                            bundle.putString("email",jsonObject.getString("email"));
+                                            bundle.putString(CommonSettings.USER_NAME,jsonObject.getString(CommonSettings.USER_NAME));
+                                            bundle.putString(CommonSettings.USER_MAIL,jsonObject.getString(CommonSettings.USER_MAIL));
                                             intent.putExtras(bundle);
                                             startActivity(intent);
                                         }

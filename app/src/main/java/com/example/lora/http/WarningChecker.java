@@ -9,6 +9,9 @@ import com.example.goldtek.storage.IStorage;
 import com.example.goldtek.storage.StorageCommon;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 /**
  * Created by Terry on 2018/06/21.
@@ -30,6 +33,10 @@ public class WarningChecker {
     private int mTempBelowLimit = -1;
     private int mVROverLimit = -1;
     private int mAccOverLimit = -1;
+
+    private Bundle mAccTrigger = null;
+    private Queue<Bundle> mAccTriggers = null;
+    private int mAccPeaceCount = 0;
 
     public WarningChecker(IStorage storage) {
         mStorage = storage;
@@ -79,12 +86,12 @@ public class WarningChecker {
                 mAccOverLimit = acc_warings[index];
             else
                 mAccOverLimit = acc_warings[0];
-
         }
-//        Log.i("terry", String.format("Hum condition - Over(%b): %d, Below(%b): %d", mConsiderHumOverLimit, mHumOverLimit, mConsiderHumBelowLimit, mHumBelowLimit));
-//        Log.i("terry", String.format("Temp condition - Over(%b): %d, Below(%b): %d", mConsiderTempOverLimit, mTempOverLimit, mConsiderTempBelowLimit, mTempBelowLimit));
-//        Log.i("terry", String.format("VR condition - Over(%b): %d", mConsiderVROverLimit, mVROverLimit));
-//        Log.i("terry", String.format("Acc condition - Over(%b): %d", mConsiderAccOverLimit, mAccOverLimit));
+
+        if (mAccTriggers != null) {
+            mAccTriggers.clear();
+            mAccTriggers = null;
+        }
     }
 
     public boolean update(Sensor sensor, Bundle newValue) {
@@ -95,36 +102,36 @@ public class WarningChecker {
                 case Humidity:
                     if (mConsiderHumOverLimit && mConsiderHumBelowLimit) {
                         if (mHumOverLimit > mHumBelowLimit) {
-                            warning = isOutside(newValue.getInt(IGetSensors.KEY_HUMIDITY, 0), mHumOverLimit, mHumBelowLimit);
+                            warning = isOutside(newValue.getInt(IGetSensors.KEY_HUMIDITY, IGetSensors.VALUE_DEFAULT), mHumOverLimit, mHumBelowLimit);
                         } else if (mHumOverLimit < mHumBelowLimit) {
-                            warning = isInside(newValue.getInt(IGetSensors.KEY_HUMIDITY, 0), mHumBelowLimit, mHumOverLimit);
+                            warning = isInside(newValue.getInt(IGetSensors.KEY_HUMIDITY, IGetSensors.VALUE_DEFAULT), mHumBelowLimit, mHumOverLimit);
                         } else {
-                            warning = newValue.getInt(IGetSensors.KEY_HUMIDITY, 0) == mHumBelowLimit;
+                            warning = newValue.getInt(IGetSensors.KEY_HUMIDITY, IGetSensors.VALUE_DEFAULT) == mHumBelowLimit;
                         }
                     } else if (mConsiderHumOverLimit) {
-                        warning = isOutside(newValue.getInt(IGetSensors.KEY_HUMIDITY, 0), mHumOverLimit, Integer.MIN_VALUE);
+                        warning = isOutside(newValue.getInt(IGetSensors.KEY_HUMIDITY, IGetSensors.VALUE_DEFAULT), mHumOverLimit, Integer.MIN_VALUE);
                     } else if (mConsiderHumBelowLimit) {
-                        warning = isOutside(newValue.getInt(IGetSensors.KEY_HUMIDITY, 0), Integer.MAX_VALUE, mHumBelowLimit);
+                        warning = isOutside(newValue.getInt(IGetSensors.KEY_HUMIDITY, IGetSensors.VALUE_DEFAULT), Integer.MAX_VALUE, mHumBelowLimit);
                     }
                     break;
                 case Temperature:
                     if (mConsiderTempOverLimit && mConsiderTempBelowLimit) {
                         if (mTempOverLimit > mTempBelowLimit) {
-                            warning = isOutside(newValue.getInt(IGetSensors.KEY_TEMPERATURE_C, 0), mTempOverLimit, mTempBelowLimit);
+                            warning = isOutside(newValue.getInt(IGetSensors.KEY_TEMPERATURE_C, IGetSensors.VALUE_DEFAULT), mTempOverLimit, mTempBelowLimit);
                         } else if (mTempOverLimit < mTempBelowLimit) {
-                            warning = isInside(newValue.getInt(IGetSensors.KEY_TEMPERATURE_C, 0), mTempBelowLimit, mTempOverLimit);
+                            warning = isInside(newValue.getInt(IGetSensors.KEY_TEMPERATURE_C, IGetSensors.VALUE_DEFAULT), mTempBelowLimit, mTempOverLimit);
                         } else {
-                            warning = newValue.getInt(IGetSensors.KEY_TEMPERATURE_C, 0) == mTempBelowLimit;
+                            warning = newValue.getInt(IGetSensors.KEY_TEMPERATURE_C, IGetSensors.VALUE_DEFAULT) == mTempBelowLimit;
                         }
                     } else if (mConsiderTempOverLimit) {
-                        warning = isOutside(newValue.getInt(IGetSensors.KEY_TEMPERATURE_C, 0), mTempOverLimit, Integer.MIN_VALUE);
+                        warning = isOutside(newValue.getInt(IGetSensors.KEY_TEMPERATURE_C, IGetSensors.VALUE_DEFAULT), mTempOverLimit, Integer.MIN_VALUE);
                     } else if (mConsiderTempBelowLimit) {
-                        warning = isOutside(newValue.getInt(IGetSensors.KEY_TEMPERATURE_C, 0), Integer.MAX_VALUE, mTempBelowLimit);
+                        warning = isOutside(newValue.getInt(IGetSensors.KEY_TEMPERATURE_C, IGetSensors.VALUE_DEFAULT), Integer.MAX_VALUE, mTempBelowLimit);
                     }
                     break;
                 case Proximity:
                     if (mConsiderVROverLimit) {
-                        warning = isOutside(newValue.getInt(IGetSensors.KEY_PROXIMITY, 0), mVROverLimit*100, Integer.MIN_VALUE);
+                        warning = isOutside(newValue.getInt(IGetSensors.KEY_PROXIMITY, IGetSensors.VALUE_DEFAULT), mVROverLimit*100, Integer.MIN_VALUE);
                     }
                     break;
             }
@@ -133,21 +140,57 @@ public class WarningChecker {
             if (oldValue != null) {
                 switch (sensor) {
                     case Accelerometer:
-                        double oldX = oldValue.getDouble(IGetSensors.KEY_ACCELEROMETER_X, 0);
-                        double oldY = oldValue.getDouble(IGetSensors.KEY_ACCELEROMETER_Y, 0);
-                        double oldZ = oldValue.getDouble(IGetSensors.KEY_ACCELEROMETER_Z, 0);
-
-                        double newX = newValue.getDouble(IGetSensors.KEY_ACCELEROMETER_X, 0);
-                        double newY = newValue.getDouble(IGetSensors.KEY_ACCELEROMETER_Y, 0);
-                        double newZ = newValue.getDouble(IGetSensors.KEY_ACCELEROMETER_Z, 0);
-
-
                         if (mConsiderAccOverLimit) {
-                            if ((mAccOverLimit < Math.abs(oldX - newX) && Math.abs(oldX - newX) < 255 - mAccOverLimit)
-                                    || (mAccOverLimit < Math.abs(oldY - newY) && Math.abs(oldY - newY) < 255 - mAccOverLimit)
-                                    || (mAccOverLimit < Math.abs(oldZ - newZ) && Math.abs(oldZ - newZ) < 255 - mAccOverLimit))
-                            {
-                                warning = true;
+
+
+                            double newX = newValue.getDouble(IGetSensors.KEY_ACCELEROMETER_X, IGetSensors.VALUE_DEFAULT);
+                            double newY = newValue.getDouble(IGetSensors.KEY_ACCELEROMETER_Y, IGetSensors.VALUE_DEFAULT);
+                            double newZ = newValue.getDouble(IGetSensors.KEY_ACCELEROMETER_Z, IGetSensors.VALUE_DEFAULT);
+
+                            if (mAccTriggers == null) {
+                                double oldX = oldValue.getDouble(IGetSensors.KEY_ACCELEROMETER_X, IGetSensors.VALUE_DEFAULT);
+                                double oldY = oldValue.getDouble(IGetSensors.KEY_ACCELEROMETER_Y, IGetSensors.VALUE_DEFAULT);
+                                double oldZ = oldValue.getDouble(IGetSensors.KEY_ACCELEROMETER_Z, IGetSensors.VALUE_DEFAULT);
+
+                                if ((mAccOverLimit < Math.abs(oldX - newX) && Math.abs(oldX - newX) < 255 - mAccOverLimit)
+                                        || (mAccOverLimit < Math.abs(oldY - newY) && Math.abs(oldY - newY) < 255 - mAccOverLimit)
+                                        || (mAccOverLimit < Math.abs(oldZ - newZ) && Math.abs(oldZ - newZ) < 255 - mAccOverLimit))
+                                {
+                                    Log.i("terry", "earthquake");
+
+                                    mAccTriggers = new LinkedList<>();
+                                    mAccTriggers.offer(oldValue);
+                                    warning = true;
+                                }
+                            } else if (mAccTriggers.peek() != null) {
+
+                                if (oldValue.getLong(IGetSensors.KEY_RESPONSE_TIME, -1) <
+                                        newValue.getLong(IGetSensors.KEY_RESPONSE_TIME, -1)) {
+                                    double oldX = mAccTriggers.peek().getDouble(IGetSensors.KEY_ACCELEROMETER_X, IGetSensors.VALUE_DEFAULT);
+                                    double oldY = mAccTriggers.peek().getDouble(IGetSensors.KEY_ACCELEROMETER_Y, IGetSensors.VALUE_DEFAULT);
+                                    double oldZ = mAccTriggers.peek().getDouble(IGetSensors.KEY_ACCELEROMETER_Z, IGetSensors.VALUE_DEFAULT);
+
+                                    if ((mAccOverLimit < Math.abs(oldX - newX) && Math.abs(oldX - newX) < 255 - mAccOverLimit)
+                                            || (mAccOverLimit < Math.abs(oldY - newY) && Math.abs(oldY - newY) < 255 - mAccOverLimit)
+                                            || (mAccOverLimit < Math.abs(oldZ - newZ) && Math.abs(oldZ - newZ) < 255 - mAccOverLimit))
+                                    {
+                                        mAccTriggers.clear();
+                                    }
+                                    mAccTriggers.offer(newValue);
+                                    warning = true;
+
+                                    if (mAccTriggers.size() >= 5) {
+                                        Log.i("terry", "peace");
+
+                                        mAccTriggers.clear();
+                                        mAccTriggers = null;
+                                        warning = false;
+                                    } else {
+                                        Log.i("terry", "dbg " + mAccTriggers.size());
+                                    }
+                                } else {
+                                    warning = true;
+                                }
                             }
                         }
 

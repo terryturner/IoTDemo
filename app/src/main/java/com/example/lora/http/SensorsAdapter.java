@@ -2,6 +2,7 @@ package com.example.lora.http;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +86,17 @@ public class SensorsAdapter extends RecyclerView.Adapter {
         }
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    public int getPosition(Sensor type) {
+        int position = -1;
+        try {
+            position = mMapPositions.get(type);
+        } catch (NullPointerException e) {
+            //e.printStackTrace();
+        }
+        return position;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView sensorName;
         TextView sensorValue;
