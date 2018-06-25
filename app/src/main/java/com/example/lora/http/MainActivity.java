@@ -81,7 +81,7 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         mWarningChecker = new WarningChecker(mStorage);
         mWarningChecker.updateConditions();
 
-        requestReadPhonePermission();
+        //requestReadPhonePermission();
     }
 
     @Override

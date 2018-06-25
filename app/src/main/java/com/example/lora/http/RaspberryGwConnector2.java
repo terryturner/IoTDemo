@@ -49,6 +49,7 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
         Log.i(TAG, "connect " + url);
 
         String clientID = Constants.CLIENT_ID;
+        /*
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.READ_PHONE_STATE) != PackageManager
                 .PERMISSION_GRANTED) {
 
@@ -59,6 +60,7 @@ public class RaspberryGwConnector2 implements IGwConnector, MqttCallbackExtended
                 clientID = Build.SERIAL;
             }
         }
+        */
 
         client = pahoMqttClient.getMqttClient(mContext, url, clientID);
         client.setCallback(this);
