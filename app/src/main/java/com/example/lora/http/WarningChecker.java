@@ -34,9 +34,13 @@ public class WarningChecker {
     private int mVROverLimit = -1;
     private int mAccOverLimit = -1;
 
-    private Bundle mAccTrigger = null;
     private Queue<Bundle> mAccTriggers = null;
-    private int mAccPeaceCount = 0;
+
+    private boolean mHumAlarming = false;
+    private boolean mTempAlarming = false;
+    private boolean mVRAlarming = false;
+    private boolean mAccAlarming = false;
+
 
     public WarningChecker(IStorage storage) {
         mStorage = storage;
@@ -113,6 +117,7 @@ public class WarningChecker {
                     } else if (mConsiderHumBelowLimit) {
                         warning = isOutside(newValue.getInt(IGetSensors.KEY_HUMIDITY, IGetSensors.VALUE_DEFAULT), Integer.MAX_VALUE, mHumBelowLimit);
                     }
+                    mHumAlarming = warning;
                     break;
                 case Temperature:
                     if (mConsiderTempOverLimit && mConsiderTempBelowLimit) {
@@ -128,11 +133,13 @@ public class WarningChecker {
                     } else if (mConsiderTempBelowLimit) {
                         warning = isOutside(newValue.getInt(IGetSensors.KEY_TEMPERATURE_C, IGetSensors.VALUE_DEFAULT), Integer.MAX_VALUE, mTempBelowLimit);
                     }
+                    mTempAlarming = warning;
                     break;
                 case Proximity:
                     if (mConsiderVROverLimit) {
                         warning = isOutside(newValue.getInt(IGetSensors.KEY_PROXIMITY, IGetSensors.VALUE_DEFAULT), mVROverLimit*100, Integer.MIN_VALUE);
                     }
+                    mVRAlarming = warning;
                     break;
             }
 
@@ -193,7 +200,7 @@ public class WarningChecker {
                                 }
                             }
                         }
-
+                        mAccAlarming = warning;
                         break;
                 }
             }
@@ -212,4 +219,28 @@ public class WarningChecker {
         if (bottomLimit <= value && value <= topLimit) return true;
         else return false;
     }
+
+    public boolean isHumidityAlarming() {
+        return mHumAlarming;
+    }
+
+    public boolean isTemperatureAlarming() {
+        return mTempAlarming;
+    }
+
+    public boolean isBreak() {
+        return mVRAlarming;
+    }
+
+    public boolean isEarthQuake() {
+        return (mAccTriggers != null);
+    }
+
+    public int getEarthQuakeTime() {
+        if (isEarthQuake()) {
+            return mAccTriggers.size();
+        }
+        return -1;
+    }
+
 }

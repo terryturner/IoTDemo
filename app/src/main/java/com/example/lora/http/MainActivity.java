@@ -2,16 +2,23 @@ package com.example.lora.http;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +29,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.goldtek.iot.demo.BaseActivityLifecycleCallbacks;
 import com.example.goldtek.iot.demo.CommonSettings;
+import com.example.goldtek.iot.demo.GoldtekApplication;
 import com.example.goldtek.iot.demo.R;
 import com.example.goldtek.storage.IStorage;
 import com.example.goldtek.storage.PrivatePreference;
@@ -53,16 +62,20 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         mWarningChecker = new WarningChecker(mStorage);
         mWarningChecker.updateConditions();
 
-        mAccount = getIntent().getStringExtra(CommonSettings.USER_NAME);
-        Log.i("terry", "login with: " + mAccount);
-
-        if (mAccount.equalsIgnoreCase(CommonSettings.USER_ADMIN_NAME))
-            setContentView(R.layout.activity_lora_root_main);
+        if (savedInstanceState != null && savedInstanceState.getString(CommonSettings.USER_NAME) != null)
+            mAccount = savedInstanceState.getString(CommonSettings.USER_NAME);
         else
-            setContentView(R.layout.activity_lora_main);
+            mAccount = getIntent().getStringExtra(CommonSettings.USER_NAME);
+
+        setContentView(R.layout.activity_lora_main);
+
+        if (isAdmin())
+            ((Button)findViewById(R.id.btn_select)).setText(R.string.connect);
+        else {
+            ((Button) findViewById(R.id.btn_select)).setText(R.string.config);
+        }
 
         setTitle(R.string.lora_title_name);
-        ((TextView) findViewById(R.id.deviceName)).setText("Connect");
         findViewById(R.id.btn_select).setTag(false);
         findViewById(R.id.btn_select).setOnClickListener(this);
         findViewById(R.id.imgAbout).setOnClickListener(this);
@@ -80,8 +93,9 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         mSensorAdapter = new SensorsAdapter(this, sensors, icons);
         mSensorList.setAdapter(mSensorAdapter);
 
-        if (!mAccount.equalsIgnoreCase(CommonSettings.USER_ADMIN_NAME) && !mAccount.equalsIgnoreCase(CommonSettings.USER_ROOT_NAME))
+        if (isUser())
             connect(2, Constants.MQTT_PUB_BROKER_IP);
+        ((TextView) findViewById(R.id.deviceName)).setText(String.format(getString(R.string.welcome_format), mAccount));
     }
 
     @Override
@@ -99,11 +113,30 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i("terry", "pause");
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mGetSensors.stop();
         mGetSensors.removeValueChangeListener(this);
         setConnectionEnabled(false);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.i("terry", "restore");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle state) {
+        Log.i("terry", "save " + mAccount);
+        state.putSerializable(CommonSettings.USER_NAME, mAccount);
+        super.onSaveInstanceState(state);
     }
 
     @Override
@@ -137,7 +170,7 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_select:
-                if (!mAccount.equalsIgnoreCase(CommonSettings.USER_ADMIN_NAME)) {
+                if (isUser()) {
                     onShowConfigDialog();
                 } else {
                     if (view.getTag() instanceof Boolean) {
@@ -209,12 +242,18 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         if (!result) {
             mGetSensors.disconnect();
             mGetSensors.removeValueChangeListener(this);
-            if (mAccount.equalsIgnoreCase(CommonSettings.USER_ADMIN_NAME)) {
+            if (isAdmin()) {
+                ((TextView) findViewById(R.id.txtStatus)).setText(R.string.disconnect);
                 setConnectionEnabled(false);
                 Toast.makeText(MainActivity.this, R.string.not_reachable_server, Toast.LENGTH_SHORT).show();
             } else {
+                ((TextView) findViewById(R.id.txtStatus)).setText(R.string.connecting);
                 connect(2, Constants.MQTT_PUB_BROKER_IP);
             }
+            ((TextView) findViewById(R.id.deviceName)).setText(null);
+        } else {
+            //String ip = (String) findViewById(R.id.deviceName).getTag();
+            ((TextView) findViewById(R.id.txtStatus)).setText(R.string.connected);
         }
     }
 
@@ -274,27 +313,58 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
             @Override
             public void run() {
                 if (mSensorAdapter != null) {
-                    boolean warning = mWarningChecker.update(type, value);
+                    boolean warning = false, peace = false;
+                    switch (type) {
+                        case Humidity:
+                            peace = !mWarningChecker.isHumidityAlarming();
+                            warning = mWarningChecker.update(type, value);
+                            if (peace && warning) setMessageNotification("Warning", "Too wet/dry");
+                            break;
+                        case Temperature:
+                            peace = !mWarningChecker.isTemperatureAlarming();
+                            warning = mWarningChecker.update(type, value);
+                            if (peace && warning) setMessageNotification("Warning", "Too hot/cold");
+                            break;
+                        case Proximity:
+                            peace = !mWarningChecker.isBreak();
+                            warning = mWarningChecker.update(type, value);
+                            if (peace && warning) setMessageNotification("Warning", "Breaking");
+                            break;
+                        case Accelerometer:
+                            peace = !mWarningChecker.isEarthQuake();
+                            warning = mWarningChecker.update(type, value);
+                            if (peace && warning) setMessageNotification("Warning", "Earthquake");
+                            break;
+                    }
+
                     mSensorAdapter.updateValue(type, updateValue, warning ? Color.RED : Color.BLACK);
 
                     if (type.equals(Sensor.Accelerometer) && mVibrator.hasVibrator()) {
                         if (warning) mVibrator.vibrate(1000);
-                        else mVibrator.cancel();
+                        else if (mWarningChecker.isEarthQuake()) mVibrator.cancel();
                     }
                 }
             }
         });
     }
 
+    private boolean isUser() {
+        return mAccount != null && (!CommonSettings.USER_ADMIN_NAME.equalsIgnoreCase(mAccount));
+    }
+
+    private boolean isAdmin() {
+        return mAccount != null && (CommonSettings.USER_ADMIN_NAME.equalsIgnoreCase(mAccount));
+    }
+
     private void onShowConnectDialog() {
-        if (mAccount.equalsIgnoreCase(CommonSettings.USER_ADMIN_NAME) || mAccount.equalsIgnoreCase(CommonSettings.USER_ROOT_NAME)) {
+        if (isAdmin()) {
             LoRaConnectDialog dialog = new LoRaConnectDialog(this, R.style.MyCustomDialog, this);
             dialog.show();
         }
     }
 
     private void onShowConfigDialog() {
-        if (!mAccount.equalsIgnoreCase(CommonSettings.USER_ADMIN_NAME)) {
+        if (isUser()) {
             LoRaConfigDialog dialog = new LoRaConfigDialog(this, R.style.MyCustomDialog, this);
             dialog.show();
         }
@@ -307,6 +377,7 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
         } else {
             ((Button) findViewById(R.id.btn_select)).setText(R.string.connect);
             findViewById(R.id.btn_select).setBackgroundResource(R.drawable.btn_background);
+            ((TextView) findViewById(R.id.txtStatus)).setText(R.string.disconnected);
         }
         findViewById(R.id.btn_select).setTag(enabled);
     }
@@ -323,8 +394,36 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
     }
 
     private void connect(int gw, String ip) {
+        ((TextView) findViewById(R.id.txtStatus)).setText(R.string.connecting);
+        findViewById(R.id.deviceName).setTag(ip);
         mWarningChecker.updateConditions();
         mGetSensors.connect(gw, ip);
         mGetSensors.setOnValuesChangeListener(MainActivity.this);
+    }
+
+    private void setMessageNotification(@NonNull String topic, @NonNull String msg) {
+        Application application = getApplication();
+        if (application instanceof GoldtekApplication) {
+            GoldtekApplication gtApp = (GoldtekApplication) application;
+            if (gtApp.getBaseALC().getLoraHomeState() == BaseActivityLifecycleCallbacks.ActivityState.STOPPED) {
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(this, "Sensor")
+                                .setSmallIcon(R.drawable.logo_icon)
+                                .setContentTitle(topic)
+                                .setContentText(msg)
+                                .setAutoCancel(true);
+                Intent resultIntent = new Intent(this, MainActivity.class);
+                resultIntent.putExtra(CommonSettings.USER_NAME, mAccount);
+
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+                stackBuilder.addParentStack(MainActivity.class);
+                stackBuilder.addNextIntent(resultIntent);
+                PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                mBuilder.setContentIntent(resultPendingIntent);
+                NotificationManager mNotificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.notify(100, mBuilder.build());
+            }
+        }
     }
 }

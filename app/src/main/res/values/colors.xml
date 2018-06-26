@@ -31,6 +31,7 @@
     <color name="alpha_black_50percent">#7f000000</color>
     <color name="amber600_90_alpha">#e6ffb300</color>
     <color name="background">#ffeeeeee</color>
+    <color name="background_darker_alittle">#ffe8e8e8</color>
     <color name="background_floating_material_dark">@color/material_grey_800</color>
     <color name="background_floating_material_light">@android:color/white</color>
     <color name="background_material_dark">@color/material_grey_850</color>

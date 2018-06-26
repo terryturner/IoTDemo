@@ -68,6 +68,7 @@ public class LoRaConnectDialog extends Dialog implements View.OnClickListener, C
         mOverLimitSpinner = findViewById(R.id.spinner_over_limit);
         mBelowLimitSpinner = findViewById(R.id.spinner_below_limit);
 
+        mButtonOK.setText(R.string.connect);
 
 
         if (mStorage.getString(StorageCommon.LORA_SERVER_IP) != null) {

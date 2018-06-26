@@ -118,8 +118,10 @@ public class GetSensors implements IGetSensors {
         }
         @Override
         public void run() {
-            mWorkHandler.sendMessage(Message.obtain(mWorkHandler, 0, mSensor));
-            mHandler.postDelayed(this, mDelay);
+            if (mWorkHandler.getLooper().getThread().isAlive())
+                mWorkHandler.sendMessage(Message.obtain(mWorkHandler, 0, mSensor));
+            if (mHandler.getLooper().getThread().isAlive())
+                mHandler.postDelayed(this, mDelay);
         }
     }
 

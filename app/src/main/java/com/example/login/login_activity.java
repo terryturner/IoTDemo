@@ -53,7 +53,7 @@ public class login_activity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
-        sp = this.getSharedPreferences("userInfo", Context.MODE_WORLD_READABLE);
+        sp = this.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         textView = (TextView)findViewById(R.id.reg_txt);
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,7 +117,7 @@ public class login_activity extends Activity {
                     Intent intent = new Intent(getApplication(), com.example.lora.http.MainActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString(CommonSettings.USER_NAME, CommonSettings.USER_ADMIN_NAME);
-                    bundle.putString(CommonSettings.USER_MAIL, CommonSettings.USER_ROOT_MAIL);
+                    bundle.putString(CommonSettings.USER_MAIL,CommonSettings.USER_ROOT_MAIL);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }

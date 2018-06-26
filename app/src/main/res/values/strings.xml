@@ -64,7 +64,7 @@
     <string name="ready">Ready</string>
     <string name="disconnect">Disconnect</string>
     <string name="connect">Connect</string>
-    <string name="config">Config</string>
+    <string name="config">Settings</string>
     <string name="not_reachable_server">Could not reach server</string>
     <string name="server">Server</string>
     <string name="dummy">Dummy</string>
@@ -105,7 +105,7 @@
     <string name="hint_insert_server_ip">Please insert the cloud IP</string>
     <string name="hint_switch_warning_over_limit">Over Limit</string>
     <string name="hint_switch_warning_below_limit">Below Limit</string>
-
+    <string name="welcome_format">Hi, %s</string>
 
     <string name="large_text">
         "Material is the metaphor.\n\n"

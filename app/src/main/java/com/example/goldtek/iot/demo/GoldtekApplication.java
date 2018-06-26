@@ -14,10 +14,15 @@ public class GoldtekApplication extends Application {
         return mContext;
     }
 
+    private BaseActivityLifecycleCallbacks mActCallback;
+
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
+
+        mActCallback = new BaseActivityLifecycleCallbacks();
+        registerActivityLifecycleCallbacks(mActCallback);
     }
 
     @Override
@@ -27,5 +32,9 @@ public class GoldtekApplication extends Application {
 
 
         System.exit(0);
+    }
+
+    public BaseActivityLifecycleCallbacks getBaseALC() {
+        return mActCallback;
     }
 }
