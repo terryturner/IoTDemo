@@ -3,14 +3,13 @@ package com.example.lora.http;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.example.goldtek.iot.demo.GoldtekApplication;
-import com.example.goldtek.iot.demo.R;
+import com.goldtek.iot.demo.GoldtekApplication;
+import com.goldtek.iot.demo.R;
 import com.example.goldtek.storage.IStorage;
 import com.example.goldtek.storage.StorageCommon;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 /**

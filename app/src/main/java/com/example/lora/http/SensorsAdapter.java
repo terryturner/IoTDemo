@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.goldtek.iot.demo.R;
+import com.goldtek.iot.demo.R;
 
 import java.util.HashMap;
 

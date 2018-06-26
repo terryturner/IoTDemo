@@ -3,7 +3,7 @@ android {
     compileSdkVersion 27
 
     defaultConfig {
-        applicationId "com.example.goldtek.iot.demo"
+        applicationId "com.goldtek.iot.demo"
         minSdkVersion 19
         targetSdkVersion 27
     }

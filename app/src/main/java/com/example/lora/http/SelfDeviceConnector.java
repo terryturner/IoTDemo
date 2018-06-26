@@ -10,8 +10,8 @@ import android.hardware.SensorManager;
 import android.os.BatteryManager;
 import android.os.Bundle;
 
-import com.example.goldtek.iot.demo.GoldtekApplication;
-import com.example.goldtek.iot.demo.ReceiveManager;
+import com.goldtek.iot.demo.GoldtekApplication;
+import com.goldtek.iot.demo.ReceiveManager;
 
 import java.util.HashMap;
 import java.util.Map;

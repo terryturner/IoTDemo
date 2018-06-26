@@ -1,4 +1,4 @@
-package com.example.goldtek.iot.demo;
+package com.goldtek.iot.demo;
 
 /**
  * Created by Terry on 2018/06/25.

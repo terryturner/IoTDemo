@@ -62,7 +62,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.goldtek.iot.demo.R;
+import com.goldtek.iot.demo.R;
 @SuppressWarnings("WeakerAccess")
 
 public class DeviceListActivity extends Activity {

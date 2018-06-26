@@ -3,7 +3,7 @@ package com.example.lora.http;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.example.goldtek.iot.demo.Tls12SocketFactory;
+import com.goldtek.iot.demo.Tls12SocketFactory;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;

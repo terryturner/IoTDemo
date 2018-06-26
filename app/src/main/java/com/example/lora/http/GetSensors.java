@@ -1,15 +1,13 @@
 package com.example.lora.http;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.example.goldtek.iot.demo.GoldtekApplication;
+import com.goldtek.iot.demo.GoldtekApplication;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -29,10 +29,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.goldtek.iot.demo.BaseActivityLifecycleCallbacks;
-import com.example.goldtek.iot.demo.CommonSettings;
-import com.example.goldtek.iot.demo.GoldtekApplication;
-import com.example.goldtek.iot.demo.R;
+import com.goldtek.iot.demo.BaseActivityLifecycleCallbacks;
+import com.goldtek.iot.demo.CommonSettings;
+import com.goldtek.iot.demo.GoldtekApplication;
+import com.goldtek.iot.demo.R;
 import com.example.goldtek.storage.IStorage;
 import com.example.goldtek.storage.PrivatePreference;
 import com.example.goldtek.storage.StorageCommon;
@@ -108,14 +108,11 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
     @Override
     protected void onResume() {
         super.onResume();
-
-        //requestReadPhonePermission();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i("terry", "pause");
     }
 
     @Override
@@ -129,12 +126,10 @@ public class MainActivity extends Activity implements IGetSensors.Callback, View
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        Log.i("terry", "restore");
     }
 
     @Override
     protected void onSaveInstanceState(Bundle state) {
-        Log.i("terry", "save " + mAccount);
         state.putSerializable(CommonSettings.USER_NAME, mAccount);
         super.onSaveInstanceState(state);
     }

@@ -1,9 +1,8 @@
 package com.example.lora.http;
 
 import android.os.Bundle;
-import android.util.Log;
 
-import com.example.goldtek.iot.demo.GoldtekApplication;
+import com.goldtek.iot.demo.GoldtekApplication;
 import com.example.lora.http.mqtt.Constants;
 import com.example.lora.http.mqtt.MQTT;
 

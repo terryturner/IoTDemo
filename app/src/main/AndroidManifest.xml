@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.goldtek.iot.demo"
+    package="com.goldtek.iot.demo"
     android:versionCode="43"
     android:versionName="2.0">
 
@@ -20,12 +20,12 @@
 
     <!-- android:theme="@android:style/Theme.Holo.Light" -->
     <application
-        android:name=".GoldtekApplication"
+        android:name="com.goldtek.iot.demo.GoldtekApplication"
         android:icon="@drawable/logo_icon"
         android:label="@string/app_name"
         android:theme="@style/Theme.Example">
         <activity
-            android:name=".SplashActivity"
+            android:name="com.goldtek.iot.demo.SplashActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:theme="@style/MyExample"

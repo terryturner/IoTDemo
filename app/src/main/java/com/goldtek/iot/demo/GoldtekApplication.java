@@ -1,6 +1,5 @@
-package com.example.goldtek.iot.demo;
+package com.goldtek.iot.demo;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 

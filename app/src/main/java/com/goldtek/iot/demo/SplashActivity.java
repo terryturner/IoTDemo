@@ -1,11 +1,10 @@
-package com.example.goldtek.iot.demo;
+package com.goldtek.iot.demo;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
 import android.widget.Toast;
 
 import com.example.bletestv3.Common;

@@ -1,4 +1,4 @@
-package com.example.goldtek.iot.demo;
+package com.goldtek.iot.demo;
 
 import java.util.regex.Pattern;
 

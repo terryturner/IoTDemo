@@ -15,8 +15,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.example.goldtek.iot.demo.R;
-import com.example.goldtek.iot.demo.ServerValidator;
+import com.goldtek.iot.demo.R;
+import com.goldtek.iot.demo.ServerValidator;
 import com.example.goldtek.storage.IStorage;
 import com.example.goldtek.storage.PrivatePreference;
 import com.example.goldtek.storage.StorageCommon;
