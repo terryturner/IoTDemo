@@ -54,6 +54,11 @@ public class LoRaConfigDialog extends Dialog implements View.OnClickListener, Co
         mOverLimitSpinner = findViewById(R.id.spinner_over_limit);
         mBelowLimitSpinner = findViewById(R.id.spinner_below_limit);
 
+        mOverLimitSwitch.setTextOn("ON");
+        mOverLimitSwitch.setTextOff("OFF");
+        mBelowLimitSwitch.setTextOn("ON");
+        mBelowLimitSwitch.setTextOff("OFF");
+
         mButtonOK.setOnClickListener(this);
 
         ArrayAdapter sensor_list = ArrayAdapter.createFromResource(
